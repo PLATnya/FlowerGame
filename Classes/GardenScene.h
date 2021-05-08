@@ -45,8 +45,6 @@ public:
 
 
     virtual void update(float delta);
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
 
     virtual void onExit();
     // implement the "static create()" method manually
