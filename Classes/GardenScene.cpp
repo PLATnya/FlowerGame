@@ -84,9 +84,16 @@ bool GardenScene::init()
         }
     }
     gardener = new Player();
-
-
     drawGarden();
+    gardener->getTouchListener()->onTouchBegan = [this](Touch* touch, Event* event) {
+
+        Sprite* flower = Sprite::create("flower.png");
+        flower->setContentSize(Size(chunkWidth,chunkWidth));
+        flower->setPosition(convertTouchToNodeSpace(touch));
+        addChild(flower);
+        return true;
+    };
+    gardener->CheckListeners(this);
     return true;
 }
 void GardenScene::update(float delta) {
