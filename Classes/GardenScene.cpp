@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "GardenScene.h"
-
+#include <algorithm>
 USING_NS_CC;
 
 Scene* GardenScene::createScene()
@@ -54,12 +54,23 @@ bool GardenScene::init()
 
     /////////////////////////////
 
+    garden_matrix_ = new GardenElement*[kGardenHeight];
+    for (int i = 0; i < kGardenHeight; ++i) {
+        garden_matrix_[i] = new GardenElement[kGardenWidth];
+        for (int j = 0; j < kGardenWidth; ++j) {
+            garden_matrix_[i][j] = DIRT;
+        }
+    }
+
+
+
 
     return true;
 }
 void GardenScene::update(float delta) {
 
 }
+
 
 void GardenScene::menuCloseCallback(Ref* pSender)
 {
@@ -72,4 +83,12 @@ void GardenScene::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+
+void GardenScene::onExit() {
+    for(int i = 0;i<kGardenHeight;i++){
+        delete[] garden_matrix_[i];
+    }
+    delete[] garden_matrix_;
+    Node::onExit();
 }

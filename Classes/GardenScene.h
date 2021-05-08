@@ -26,9 +26,17 @@
 #define __GARDENSCENE_SCENE_H__
 
 #include "cocos2d.h"
+const int kGardenWidth = 100;
+const int kGardenHeight = 40;
 
 class GardenScene : public cocos2d::Scene
 {
+    enum GardenElement{
+        DIRT,
+        FLOWER
+    };
+
+    GardenElement** garden_matrix_;
 public:
     static cocos2d::Scene* createScene();
 
@@ -38,7 +46,8 @@ public:
     virtual void update(float delta);
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
-    
+
+    virtual void onExit();
     // implement the "static create()" method manually
     CREATE_FUNC(GardenScene);
 };
