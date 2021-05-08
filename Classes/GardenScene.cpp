@@ -26,22 +26,25 @@
 #include <algorithm>
 USING_NS_CC;
 
-DrawNode* GardenScene::drawSquare(const float width,const float borderWidth, const Color4F mainColor, const Color4F borderColor){
-    DrawNode* drawNode = DrawNode::create();
-    Vec2 vertices[4] = { Vec2(0, 0), Vec2(width, 0), Vec2(width, width), Vec2(0, width) };
-    drawNode->drawPolygon(vertices, 4, mainColor,borderWidth,borderColor);
-    return drawNode;
-}
+
 void GardenScene::drawGarden(){
+
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    for(int i = 0;i<kGardenHeight;++i){
-        for(int j = 0;j<kGardenWidth;++j){
-            auto square = drawSquare(chunkWidth-4,2,Color4F::GREEN,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
-            addChild(square);
-            square->setPosition(origin.x + j*chunkWidth,origin.y+i*chunkWidth);
+
+    auto gardenGrid = DrawNode::create();
+    float width = chunkWidth-2;
+    for(int i = 0;i<kGardenHeight;++i) {
+        for (int j = 0; j < kGardenWidth; ++j) {
+            Vec2 origin = Vec2(j*width, i*width);
+            Vec2 vertices[4] = { origin, origin + Vec2(width, 0), origin + Vec2(width, width), origin + Vec2(0, width) };
+            gardenGrid->drawPolygon(vertices, 4, Color4F::GREEN,1,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
         }
     }
+
+    addChild(gardenGrid);
+    gardenGrid->setPosition(origin.x,origin.y);
+
 }
 
 Scene* GardenScene::createScene()

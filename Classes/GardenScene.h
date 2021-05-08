@@ -30,8 +30,8 @@
 
 class GardenScene : public cocos2d::Scene
 {
-    const int kGardenWidth = 20;
-    const int kGardenHeight = 4;
+    const int kGardenWidth = 25;
+    const int kGardenHeight = 7;
     int chunkWidth;
     enum GardenElement{
         DIRT,
@@ -42,7 +42,6 @@ class GardenScene : public cocos2d::Scene
     Player* gardener;
 
     void drawGarden();
-    cocos2d::DrawNode* drawSquare(const float width,const float borderWidth, const cocos2d::Color4F mainColor, const cocos2d::Color4F borderColor);
 public:
     static cocos2d::Scene* createScene();
 
