@@ -26,18 +26,23 @@
 #define __GARDENSCENE_SCENE_H__
 #include "Player.h"
 #include "cocos2d.h"
-const int kGardenWidth = 100;
-const int kGardenHeight = 40;
+
 
 class GardenScene : public cocos2d::Scene
 {
+    const int kGardenWidth = 20;
+    const int kGardenHeight = 4;
+    int chunkWidth;
     enum GardenElement{
         DIRT,
         FLOWER
     };
 
-    GardenElement** garden_matrix_;
-    Player* gardener_;
+    GardenElement** gardenMatrix;
+    Player* gardener;
+
+    void drawGarden();
+    cocos2d::DrawNode* drawSquare(const float width,const float borderWidth, const cocos2d::Color4F mainColor, const cocos2d::Color4F borderColor);
 public:
     static cocos2d::Scene* createScene();
 

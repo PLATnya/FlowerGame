@@ -26,6 +26,24 @@
 #include <algorithm>
 USING_NS_CC;
 
+DrawNode* GardenScene::drawSquare(const float width,const float borderWidth, const Color4F mainColor, const Color4F borderColor){
+    DrawNode* drawNode = DrawNode::create();
+    Vec2 vertices[4] = { Vec2(0, 0), Vec2(width, 0), Vec2(width, width), Vec2(0, width) };
+    drawNode->drawPolygon(vertices, 4, mainColor,borderWidth,borderColor);
+    return drawNode;
+}
+void GardenScene::drawGarden(){
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    for(int i = 0;i<kGardenHeight;++i){
+        for(int j = 0;j<kGardenWidth;++j){
+            auto square = drawSquare(chunkWidth-4,2,Color4F::GREEN,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
+            addChild(square);
+            square->setPosition(origin.x + j*chunkWidth,origin.y+i*chunkWidth);
+        }
+    }
+}
+
 Scene* GardenScene::createScene()
 {
     return GardenScene::create();
@@ -52,17 +70,20 @@ bool GardenScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    chunkWidth = visibleSize.width/kGardenWidth;
     /////////////////////////////
 
-    garden_matrix_ = new GardenElement*[kGardenHeight];
+    gardenMatrix = new GardenElement*[kGardenHeight];
     for (int i = 0; i < kGardenHeight; ++i) {
-        garden_matrix_[i] = new GardenElement[kGardenWidth];
+        gardenMatrix[i] = new GardenElement[kGardenWidth];
         for (int j = 0; j < kGardenWidth; ++j) {
-            garden_matrix_[i][j] = DIRT;
+            gardenMatrix[i][j] = DIRT;
         }
     }
-    gardener_ = new Player();
+    gardener = new Player();
 
+
+    drawGarden();
     return true;
 }
 void GardenScene::update(float delta) {
@@ -70,10 +91,10 @@ void GardenScene::update(float delta) {
 
 
 void GardenScene::onExit() {
-    delete gardener_;
+    delete gardener;
     for(int i = 0;i<kGardenHeight;i++){
-        delete[] garden_matrix_[i];
+        delete[] gardenMatrix[i];
     }
-    delete[] garden_matrix_;
+    delete[] gardenMatrix;
     Node::onExit();
 }
