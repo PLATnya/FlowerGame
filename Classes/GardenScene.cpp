@@ -61,9 +61,7 @@ bool GardenScene::init()
             garden_matrix_[i][j] = DIRT;
         }
     }
-
-
-
+    gardener_ = new Player();
 
     return true;
 }
@@ -86,6 +84,7 @@ void GardenScene::menuCloseCallback(Ref* pSender)
 }
 
 void GardenScene::onExit() {
+    delete gardener_;
     for(int i = 0;i<kGardenHeight;i++){
         delete[] garden_matrix_[i];
     }

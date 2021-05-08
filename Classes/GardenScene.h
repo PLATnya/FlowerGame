@@ -24,7 +24,7 @@
 
 #ifndef __GARDENSCENE_SCENE_H__
 #define __GARDENSCENE_SCENE_H__
-
+#include "Player.h"
 #include "cocos2d.h"
 const int kGardenWidth = 100;
 const int kGardenHeight = 40;
@@ -37,6 +37,7 @@ class GardenScene : public cocos2d::Scene
     };
 
     GardenElement** garden_matrix_;
+    Player* gardener_;
 public:
     static cocos2d::Scene* createScene();
 
