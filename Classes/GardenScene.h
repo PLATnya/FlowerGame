@@ -44,9 +44,9 @@ class GardenScene : public cocos2d::Scene
 
     GardenElement** gardenMatrix;
     Player* gardener;
-
+    cocos2d::Label* coinsLabel;
     void drawGarden();
-
+    void ReloadCoins();
     void PlantFlower(cocos2d::Vec2 position);
 public:
     static cocos2d::Scene* createScene();
