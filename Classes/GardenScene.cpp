@@ -93,7 +93,14 @@ bool GardenScene::init()
     gardener->CheckListeners(this);
     return true;
 }
+
+float t = 0;
 void GardenScene::update(float delta) {
+    if(t>=3){
+        gardener->AddCoins(gardener->GetFlowersCount() * 5);
+        t = 0;
+    }
+    else t += delta;
 }
 
 
@@ -112,7 +119,7 @@ void GardenScene::PlantFlower(cocos2d::Vec2 position) {
         Vec2 bound(origin.x + chunkWidth * kGardenWidth, origin.y + chunkWidth * kGardenHeight);
         if (position.x < bound.x && position.y < bound.y) {
             gardener->AddCoins(-50);
-
+            gardener->AddFlower();
             Sprite *flower = Sprite::create("flower.png");
 
             Vec2 newPosition = position - origin;
