@@ -1,27 +1,23 @@
 
 #ifndef PROJ_ANDROID_PLAYER_H
 #define PROJ_ANDROID_PLAYER_H
-#include "cocos2d.h"
-class Player {
 
-    int coins = 150;
-    int plantedFlowersCount = 0;
+#include "cocos2d.h"
+
+#include "GardenModel.h"
+class Player {
 
     cocos2d::EventListenerTouchOneByOne* touchListener;
 
+    GardenModel* gardenGrid;
 public:
 
-    Player();
+    Player(cocos2d::Scene* scene);
 
     inline cocos2d::EventListenerTouchOneByOne* getTouchListener(){return touchListener;};
     void checkListeners(cocos2d::Node *listenerNode);
 
-    inline int getCoins(){return coins;}
-    inline void addCoins(int coins){ this->coins+=coins;}
-
-    inline int getFlowersCount(){return plantedFlowersCount;}
-    inline void addFlower(){plantedFlowersCount++;}
 };
 
 
-#endif //PROJ_ANDROID_PLAYER_H
+#endif // PROJ_ANDROID_PLAYER_H
