@@ -33,12 +33,13 @@ void GardenScene::drawGarden(){
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     auto gardenGrid = DrawNode::create();
-    float width = chunkWidth-2;
+    float borderWidth = 0.5f;
+    float width = chunkWidth - borderWidth*2;
     for(int i = 0;i<kGardenHeight;++i) {
         for (int j = 0; j < kGardenWidth; ++j) {
-            Vec2 origin = Vec2(j*width, i*width);
+            Vec2 origin = Vec2(j*chunkWidth +borderWidth, i*chunkWidth+borderWidth);
             Vec2 vertices[4] = { origin, origin + Vec2(width, 0), origin + Vec2(width, width), origin + Vec2(0, width) };
-            gardenGrid->drawPolygon(vertices, 4, Color4F::GREEN,1,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
+            gardenGrid->drawPolygon(vertices, 4, Color4F::GREEN,borderWidth,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
         }
     }
 
@@ -69,9 +70,8 @@ bool GardenScene::init()
         return false;
     }
     scheduleUpdate();
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+    origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 
     chunkWidth = visibleSize.width/kGardenWidth;
     /////////////////////////////
@@ -87,10 +87,7 @@ bool GardenScene::init()
     drawGarden();
     gardener->getTouchListener()->onTouchBegan = [this](Touch* touch, Event* event) {
 
-        Sprite* flower = Sprite::create("flower.png");
-        flower->setContentSize(Size(chunkWidth,chunkWidth));
-        flower->setPosition(convertTouchToNodeSpace(touch));
-        addChild(flower);
+        PlantFlower(convertTouchToNodeSpace(touch));
         return true;
     };
     gardener->CheckListeners(this);
@@ -107,4 +104,26 @@ void GardenScene::onExit() {
     }
     delete[] gardenMatrix;
     Node::onExit();
+}
+
+void GardenScene::PlantFlower(cocos2d::Vec2 position) {
+    log("FUCK %f", origin.y);
+    if(gardener->GetCoins()>=50) {
+        Vec2 bound(origin.x + chunkWidth * kGardenWidth, origin.y + chunkWidth * kGardenHeight);
+        if (position.x < bound.x && position.y < bound.y) {
+            gardener->AddCoins(-50);
+
+            Sprite *flower = Sprite::create("flower.png");
+
+            Vec2 newPosition = position - origin;
+            int row =(int)(newPosition.x/chunkWidth);
+            int column =(int)(newPosition.y/chunkWidth);
+            newPosition = Vec2(row+0.5f,column+0.5f)*chunkWidth + origin;
+
+
+            flower->setPosition(newPosition);
+            flower->setContentSize(Size(chunkWidth, chunkWidth));
+            addChild(flower);
+        }
+    }
 }

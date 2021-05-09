@@ -11,6 +11,7 @@ public:
     Player();
     inline cocos2d::EventListenerTouchOneByOne* getTouchListener(){return touchListener;};
     void CheckListeners(cocos2d::Node *listenerNode);
+    inline void AddCoins(int coins){this->coins+=coins;}
 };
 
 

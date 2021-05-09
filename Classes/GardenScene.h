@@ -24,6 +24,7 @@
 
 #ifndef __GARDENSCENE_SCENE_H__
 #define __GARDENSCENE_SCENE_H__
+
 #include "Player.h"
 #include "cocos2d.h"
 
@@ -31,7 +32,10 @@
 class GardenScene : public cocos2d::Scene
 {
     const int kGardenWidth = 25;
-    const int kGardenHeight = 7;
+    const int kGardenHeight = 7 ;
+
+    cocos2d::Size visibleSize;
+    cocos2d::Vec2 origin;
     int chunkWidth;
     enum GardenElement{
         DIRT,
@@ -42,6 +46,8 @@ class GardenScene : public cocos2d::Scene
     Player* gardener;
 
     void drawGarden();
+
+    void PlantFlower(cocos2d::Vec2 position);
 public:
     static cocos2d::Scene* createScene();
 
