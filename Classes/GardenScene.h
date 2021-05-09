@@ -2,40 +2,43 @@
 #ifndef __GARDENSCENE_SCENE_H__
 #define __GARDENSCENE_SCENE_H__
 
-#include "Player.h"
+
 #include "cocos2d.h"
 
 
 class GardenScene : public cocos2d::Scene
 {
-    const int kGardenWidth = 25;
-    const int kGardenHeight = 7 ;
-
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
 
     int chunkWidth;
 
-    enum GardenElement{
-        DIRT,
-        FLOWER
-    };
 
-    GardenElement** gardenMatrix;
-    Player* gardener;
     cocos2d::Label* coinsLabel;
 
-    void drawGarden();
-    void reloadCoins();
-    void plantFlower(cocos2d::Vec2 position);
-public:
-    static cocos2d::Scene* createScene();
+    std::vector<std::function<void(float)>> updateMethods;
 
+public:
+
+    void addUpdateMethod(std::function<void(float)> function);
+
+    void makeFlower(int row, int column);
+    static cocos2d::Scene* createScene();
     virtual bool init();
     virtual void update(float delta);
     virtual void onExit();
 
+    void drawGarden(int gardenWidth, int gardenHeight);
+    void reloadCoins(int coins);
+    void initCoins();
+
+    inline void up(float t){}
+
+    inline cocos2d::Vec2& getOrigin(){return origin;}
+    inline cocos2d::Size& getVisibleSize(){return visibleSize;}
+    inline int getChunkWidth(){return chunkWidth;}
+    inline void setChunkWidth(int width){chunkWidth = visibleSize.width/width;}
     CREATE_FUNC(GardenScene);
 };
 
-#endif // __GARDENSCENE_SCENE_H__
+#endif  //__GARDENSCENE_SCENE_H__
