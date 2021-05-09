@@ -112,7 +112,7 @@ bool GardenScene::init()
 
 float t = 0;
 void GardenScene::update(float delta) {
-    if(gardener->GetCoins()>0) {
+    if(gardener->GetFlowersCount()>0) {
         if (t >= 3) {
             gardener->AddCoins(gardener->GetFlowersCount() * 5);
             ReloadCoins();
