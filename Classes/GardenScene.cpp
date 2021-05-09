@@ -91,16 +91,34 @@ bool GardenScene::init()
         return true;
     };
     gardener->CheckListeners(this);
+
+
+
+    coinsLabel = Label::createWithTTF("Coins:", "fonts/Marker Felt.ttf", 24);
+    if (coinsLabel == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+
+        coinsLabel->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                origin.y + visibleSize.height - coinsLabel->getContentSize().height));
+        this->addChild(coinsLabel, 1);
+    }
+    ReloadCoins();
     return true;
 }
 
 float t = 0;
 void GardenScene::update(float delta) {
-    if(t>=3){
-        gardener->AddCoins(gardener->GetFlowersCount() * 5);
-        t = 0;
+    if(gardener->GetFlowersCount()>0) {
+        if (t >= 3) {
+            gardener->AddCoins(gardener->GetFlowersCount() * 5);
+            ReloadCoins();
+            t = 0;
+        } else t += delta;
     }
-    else t += delta;
 }
 
 
@@ -120,6 +138,7 @@ void GardenScene::PlantFlower(cocos2d::Vec2 position) {
         if (position.x < bound.x && position.y < bound.y) {
             gardener->AddCoins(-50);
             gardener->AddFlower();
+            ReloadCoins();
             Sprite *flower = Sprite::create("flower.png");
 
             Vec2 newPosition = position - origin;
@@ -133,4 +152,10 @@ void GardenScene::PlantFlower(cocos2d::Vec2 position) {
             addChild(flower);
         }
     }
+}
+
+void GardenScene::ReloadCoins() {
+    std::stringstream ss;
+    ss << "Coins: "<<std::to_string(gardener->GetCoins());
+    coinsLabel->setString(ss.str());
 }
