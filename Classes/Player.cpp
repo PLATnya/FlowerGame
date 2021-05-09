@@ -6,6 +6,6 @@ Player::Player() {
     touchListener->setSwallowTouches(true);
 }
 
-void Player::CheckListeners(cocos2d::Node *listenerNode) {
+void Player::checkListeners(cocos2d::Node *listenerNode) {
     listenerNode->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener,listenerNode);
 }

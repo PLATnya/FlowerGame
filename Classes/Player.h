@@ -5,16 +5,22 @@
 class Player {
 
     int coins = 150;
-    cocos2d::EventListenerTouchOneByOne* touchListener;
     int plantedFlowersCount = 0;
+
+    cocos2d::EventListenerTouchOneByOne* touchListener;
+
 public:
-    inline int GetCoins(){return coins;}
+
     Player();
+
     inline cocos2d::EventListenerTouchOneByOne* getTouchListener(){return touchListener;};
-    void CheckListeners(cocos2d::Node *listenerNode);
-    inline void AddCoins(int coins){this->coins+=coins;}
-    inline int GetFlowersCount(){return plantedFlowersCount;}
-    inline void AddFlower(){plantedFlowersCount++;}
+    void checkListeners(cocos2d::Node *listenerNode);
+
+    inline int getCoins(){return coins;}
+    inline void addCoins(int coins){ this->coins+=coins;}
+
+    inline int getFlowersCount(){return plantedFlowersCount;}
+    inline void addFlower(){plantedFlowersCount++;}
 };
 
 

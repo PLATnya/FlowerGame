@@ -1,26 +1,3 @@
-/****************************************************************************
- Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
- 
- http://www.cocos2d-x.org
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- ****************************************************************************/
 
 #include "GardenScene.h"
 #include <algorithm>
@@ -53,7 +30,7 @@ Scene* GardenScene::createScene()
     return GardenScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
@@ -63,8 +40,7 @@ static void problemLoading(const char* filename)
 // on "init" you need to initialize your instance
 bool GardenScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
+
     if ( !Scene::init() )
     {
         return false;
@@ -74,7 +50,7 @@ bool GardenScene::init()
     origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 
     chunkWidth = visibleSize.width/kGardenWidth;
-    /////////////////////////////
+
 
     gardenMatrix = new GardenElement*[kGardenHeight];
     for (int i = 0; i < kGardenHeight; ++i) {
@@ -87,10 +63,10 @@ bool GardenScene::init()
     drawGarden();
     gardener->getTouchListener()->onTouchBegan = [this](Touch* touch, Event* event) {
 
-        PlantFlower(convertTouchToNodeSpace(touch));
+        plantFlower(convertTouchToNodeSpace(touch));
         return true;
     };
-    gardener->CheckListeners(this);
+    gardener->checkListeners(this);
 
 
 
@@ -106,16 +82,16 @@ bool GardenScene::init()
                                 origin.y + visibleSize.height - coinsLabel->getContentSize().height));
         this->addChild(coinsLabel, 1);
     }
-    ReloadCoins();
+    reloadCoins();
     return true;
 }
 
 float t = 0;
 void GardenScene::update(float delta) {
-    if(gardener->GetFlowersCount()>0) {
+    if(gardener->getFlowersCount() > 0) {
         if (t >= 3) {
-            gardener->AddCoins(gardener->GetFlowersCount() * 5);
-            ReloadCoins();
+            gardener->addCoins(gardener->getFlowersCount() * 5);
+            reloadCoins();
             t = 0;
         } else t += delta;
     }
@@ -131,14 +107,14 @@ void GardenScene::onExit() {
     Node::onExit();
 }
 
-void GardenScene::PlantFlower(cocos2d::Vec2 position) {
+void GardenScene::plantFlower(cocos2d::Vec2 position) {
     log("FUCK %f", origin.y);
-    if(gardener->GetCoins()>=50) {
+    if(gardener->getCoins() >= 50) {
         Vec2 bound(origin.x + chunkWidth * kGardenWidth, origin.y + chunkWidth * kGardenHeight);
         if (position.x < bound.x && position.y < bound.y) {
-            gardener->AddCoins(-50);
-            gardener->AddFlower();
-            ReloadCoins();
+            gardener->addCoins(-50);
+            gardener->addFlower();
+            reloadCoins();
             Sprite *flower = Sprite::create("flower.png");
 
             Vec2 newPosition = position - origin;
@@ -154,8 +130,8 @@ void GardenScene::PlantFlower(cocos2d::Vec2 position) {
     }
 }
 
-void GardenScene::ReloadCoins() {
+void GardenScene::reloadCoins() {
     std::stringstream ss;
-    ss << "Coins: "<<std::to_string(gardener->GetCoins());
+    ss << "Coins: "<<std::to_string(gardener->getCoins());
     coinsLabel->setString(ss.str());
 }
