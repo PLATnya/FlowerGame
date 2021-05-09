@@ -23,7 +23,7 @@ public:
     void addUpdateMethod(std::function<void(float)> function);
 
     void makeFlower(int row, int column);
-    static cocos2d::Scene* createScene();
+    static GardenScene* createScene();
     virtual bool init();
     virtual void update(float delta);
     virtual void onExit();

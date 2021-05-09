@@ -32,25 +32,16 @@ GardenModel::~GardenModel() {
     delete[] gardenMatrix;
 }
 
-void GardenModel::addFlowerOnGrid(const cocos2d::Vec2 position) {
+void GardenModel::addFlowerOnGrid(int row, int column) {
 
-
-    cocos2d::Vec2 origin = gardenScene->getOrigin();
-    int chunkWidth = gardenScene->getChunkWidth();
-    cocos2d::Vec2 newPosition = position - origin;
-    int row =(int)(newPosition.x/chunkWidth);
-    int column =(int)(newPosition.y/chunkWidth);
-
-    cocos2d::Vec2 bound(origin.x + chunkWidth * kGardenWidth, origin.y + chunkWidth * kGardenHeight);
-    if (position.x < bound.x && position.y < bound.y) {
-        if (getCoins() >= 50) {
-            gardenScene->makeFlower(row, column);
-            addFlower();
-            addCoins(-50);
-            getScene()->reloadCoins(getCoins());
-            gardenMatrix[column][row] = GardenElement::FLOWER;
-        }
+    if (getCoins() >= 50) {
+        gardenScene->makeFlower(row, column);
+        addFlower();
+        addCoins(-50);
+        getScene()->reloadCoins(getCoins());
+        gardenMatrix[column][row] = GardenElement::FLOWER;
     }
+
 
 }
 

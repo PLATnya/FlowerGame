@@ -21,7 +21,7 @@ public:
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;
 
-    void addFlowerOnGrid(const cocos2d::Vec2 position);
+    void addFlowerOnGrid(int row, int column);
 
     inline GardenScene* getScene(){return gardenScene;}
 

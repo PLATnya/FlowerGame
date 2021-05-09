@@ -22,7 +22,7 @@ void GardenScene::drawGarden(int gardenWidth, int gardenHeight){
 
 }
 
-Scene* GardenScene::createScene()
+GardenScene* GardenScene::createScene()
 {
     return GardenScene::create();
 }
