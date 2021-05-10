@@ -6,13 +6,13 @@ void Snake::addTailPart() {
     auto last = *(tailParts.end()-1);
     auto newGridPosition = step(std::get<0>(last),std::get<2>(last), true);
 
-    auto tailPart = std::make_tuple(newGridPosition,scene->makeSnakeTail(newGridPosition.first,newGridPosition.second),std::get<2>(last));
+    auto tailPart = std::make_tuple(newGridPosition,garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second),std::get<2>(last));
     tailParts.push_back(tailPart);
 
 
     auto moveAction = cocos2d::MoveBy::create(1,[&tailPart,this](){
         auto gridOffset = step(std::get<2>(tailPart));
-        return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->scene->getChunkWidth();
+        return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->garden->getScene()->getChunkWidth();
     }());
 
     auto swapAction = cocos2d::CallFunc::create([&tailPart,&last, this](){
@@ -28,25 +28,21 @@ void Snake::removeTailPart() {
 
 }
 
-void Snake::recalculateMatrix() {
-
-}
 
 
+Snake::Snake(int row, int column, Way way, GardenModel* garden) {
 
-Snake::Snake(int row, int column, Way way, GardenScene* scene) {
-    this->scene = scene;
+    this->garden = garden;
     auto position = std::make_pair(row,column);
 
-
-    tailParts.push_back(std::make_tuple(position, scene->makeSnakeTail(row,column),way));
+    tailParts.push_back(std::make_tuple(position, garden->getScene()->makeSnakeTail(row,column),way));
 
 
     auto moveAction = cocos2d::MoveBy::create(1,[this](){
         auto tailPart = tailParts[0];
         auto gridOffset = step(std::get<2>(tailPart));
 
-       return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->scene->getChunkWidth();
+       return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->garden->getScene()->getChunkWidth();
     }());
 
     auto swapAction = cocos2d::CallFunc::create([this](){

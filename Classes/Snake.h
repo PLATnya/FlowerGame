@@ -6,7 +6,7 @@
 #define PROJ_ANDROID_SNAKE_H
 #include <vector>
 #include <cocos2d.h>
-#include "GardenScene.h"
+#include "GardenModel.h"
 enum Way {
     UP=0,
     DOWN,
@@ -18,13 +18,13 @@ class Snake {
     std::pair<int,int> step(std::pair<int,int> start, Way way, bool isInverse = false);
     std::pair<int,int> step(Way way, bool isInverse = false);
 
-    GardenScene* scene;
+    GardenModel* garden;
 public:
-    Snake(int row, int column, Way way, GardenScene* scene);
+    Snake(int row, int column, Way way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();
 
-    void recalculateMatrix();
+
 
 
 };
