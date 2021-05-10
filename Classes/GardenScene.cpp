@@ -16,7 +16,6 @@ void GardenScene::drawGarden(int gardenWidth, int gardenHeight){
             gardenGridNode->drawPolygon(vertices, 4, Color4F::GREEN,borderWidth,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
         }
     }
-
     addChild(gardenGridNode);
     gardenGridNode->setPosition(origin.x,origin.y);
 
@@ -69,7 +68,7 @@ void GardenScene::reloadCoins(int coins) {
     coinsLabel->setString(ss.str());
 }
 
-void GardenScene::makeFlower(int row, int column) {
+Sprite* GardenScene::makeFlower(int row, int column) {
     Sprite *flower = Sprite::create("flower.png");
 
     Vec2 newPosition = Vec2(row+0.5f,column+0.5f)*chunkWidth + origin;
@@ -78,6 +77,7 @@ void GardenScene::makeFlower(int row, int column) {
     flower->setPosition(newPosition);
     flower->setContentSize(Size(chunkWidth, chunkWidth));
     addChild(flower);
+    return flower;
 }
 
 void GardenScene::initCoins() {

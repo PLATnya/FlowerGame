@@ -22,7 +22,7 @@ public:
 
     void addUpdateMethod(std::function<void(float)> function);
 
-    void makeFlower(int row, int column);
+    cocos2d::Sprite* makeFlower(int row, int column);
     static GardenScene* createScene();
     virtual bool init();
     virtual void update(float delta);

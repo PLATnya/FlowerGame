@@ -17,6 +17,9 @@ class GardenModel {
 
     int plantedFlowersCount = 0;
     int coins = 150;
+
+
+    std::vector<cocos2d::Node*> flowers;
 public:
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;

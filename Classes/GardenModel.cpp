@@ -34,8 +34,8 @@ GardenModel::~GardenModel() {
 
 void GardenModel::addFlowerOnGrid(int row, int column) {
 
-    if (getCoins() >= 50) {
-        gardenScene->makeFlower(row, column);
+    if (getCoins() >= 50 && gardenMatrix[column][row] == GardenElement::DIRT) {
+        flowers.push_back(gardenScene->makeFlower(row, column));
         addFlower();
         addCoins(-50);
         getScene()->reloadCoins(getCoins());
