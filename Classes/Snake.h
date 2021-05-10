@@ -16,6 +16,7 @@ enum Way {
 class Snake {
     std::vector<std::tuple<std::pair<int,int>,cocos2d::Node*,Way>> tailParts;
     std::pair<int,int> step(std::pair<int,int> start, Way way, bool isInverse = false);
+    std::pair<int,int> step(Way way, bool isInverse = false);
 
     GardenScene* scene;
 public:
@@ -24,7 +25,6 @@ public:
     void removeTailPart();
 
     void recalculateMatrix();
-    void move();
 
 
 };
