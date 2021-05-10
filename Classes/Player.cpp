@@ -13,14 +13,10 @@ Player::Player(GardenScene* scene) {
 
     touchListener->onTouchBegan = [this,scene,chunkWidth,origin,bound](cocos2d::Touch* touch, cocos2d::Event* event) {
         cocos2d::Vec2 position = scene->convertTouchToNodeSpace(touch);
-
-
-        cocos2d::Vec2 newPosition = position - origin;
-        int row =(int)(newPosition.x/chunkWidth);
-        int column =(int)(newPosition.y/chunkWidth);
+        auto gridPos = scene->fromPositionToGrid(position);
 
         if (position.x < bound.x && position.y < bound.y) {
-            gardenGrid->addFlowerOnGrid(row, column);
+            gardenGrid->addFlowerOnGrid(gridPos.first, gridPos.second);
         }
 
         return true;

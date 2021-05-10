@@ -71,8 +71,8 @@ void GardenScene::reloadCoins(int coins) {
 Sprite* GardenScene::makeFlower(int row, int column) {
     Sprite *flower = Sprite::create("flower.png");
 
-    Vec2 newPosition = Vec2(row+0.5f,column+0.5f)*chunkWidth + origin;
 
+    Vec2 newPosition = fromGridToPosition(row, column) + Vec2(chunkWidth,chunkWidth)*0.5f;
 
     flower->setPosition(newPosition);
     flower->setContentSize(Size(chunkWidth, chunkWidth));
@@ -96,4 +96,16 @@ void GardenScene::initCoins() {
 
 void GardenScene::addUpdateMethod(std::function<void(float)> function) {
     updateMethods.push_back(function);
+}
+
+
+cocos2d::Vec2 GardenScene::fromGridToPosition(int row, int column) {
+    return cocos2d::Vec2(row*chunkWidth,column*chunkWidth) + origin;
+}
+
+std::pair<int, int> GardenScene::fromPositionToGrid(const cocos2d::Vec2& position) {
+    cocos2d::Vec2 newPosition = position - origin;
+    int row =(int)(newPosition.x/chunkWidth);
+    int column =(int)(newPosition.y/chunkWidth);
+    return std::make_pair(row,column);
 }

@@ -23,6 +23,12 @@ public:
     void addUpdateMethod(std::function<void(float)> function);
 
     cocos2d::Sprite* makeFlower(int row, int column);
+
+   
+
+    cocos2d::Vec2 fromGridToPosition(int row, int column);
+    std::pair<int,int> fromPositionToGrid(const cocos2d::Vec2& position);
+
     static GardenScene* createScene();
     virtual bool init();
     virtual void update(float delta);
