@@ -36,7 +36,7 @@ public:
 
     float speed =1;
 
-    int chunksCountToChangeWay = 3;
+    int chunksCountToChangeWay = 2;
     Snake(int row, int column, Way way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();

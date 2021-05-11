@@ -2,7 +2,7 @@
 #include "Snake.h"
 
 using namespace cocos2d;
-void Snake::addTailPart() {
+void Snake::addTailPart() {//TODO: no blinding adding
     decltype(auto) last = *(tailParts.end()-1);
     Way& lastTailPartWayRef = GET_WAY(last);
     auto newGridPosition = step(GET_ROW(last),GET_COLUMN(last),lastTailPartWayRef, true);
@@ -23,6 +23,9 @@ Snake::Snake(int row, int column, Way way, GardenModel* garden) {
     garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
     addTailPart();
+
+    auto growingAction = Sequence::createWithTwoActions(DelayTime::create(3),CallFunc::create([this](){addTailPart();}));
+    GET_SPRITE(tailParts[0]).runAction(RepeatForever::create(growingAction));
 }
 
 std::pair<int, int>&& Snake::step(Way way, bool isInverse) {
