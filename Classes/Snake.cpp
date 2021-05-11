@@ -4,27 +4,30 @@
 
 using namespace cocos2d;
 void Snake::addTailPart() {
-    auto last = *(tailParts.end()-1);
+    decltype(auto) last = *(tailParts.end()-1);
     Way& lastTailPartWayRef = GET_WAY(last);
     auto newGridPosition = step(GET_ROW(last),GET_COLUMN(last),lastTailPartWayRef, true);
-    auto tailPart = std::tie(newGridPosition.first,newGridPosition.second,*garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second), lastTailPartWayRef);
-    tailParts.push_back(tailPart);
+    tailParts.emplace_back(
+            std::tie(newGridPosition.first,newGridPosition.second,*garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second), lastTailPartWayRef));
 }
 
 void Snake::removeTailPart() {
-
+    tailParts.pop_back();
 }
 
 Snake::Snake(int row, int column, Way way, GardenModel* garden) {
     this->garden = garden;
 
-    tailParts.push_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column),way));
+    tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column),way));
     garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
     for(int i = 0;i<5;i++)addTailPart();
 
+
+
 }
-std::pair<int, int> Snake::step(Way way, bool isInverse) {
+
+std::pair<int, int>&& Snake::step(Way way, bool isInverse) {
     std::pair<int, int> stepWay(0,0);
     switch (way) {
         case Way::RIGHT:
@@ -40,8 +43,11 @@ std::pair<int, int> Snake::step(Way way, bool isInverse) {
             stepWay = std::make_pair(0,-1);
             break;
     }
-    if(isInverse) stepWay = std::make_pair(-stepWay.first, -stepWay.second);
-    return stepWay;
+    if(isInverse){
+        stepWay.first*=-1;
+        stepWay.second*=-1;
+    }
+    return std::move(stepWay);
 }
 void Snake::stepByRef(int& row, int& column, Way way, bool isInverse) {
     std::pair<int, int> stepWay = step(way,isInverse);
@@ -50,7 +56,7 @@ void Snake::stepByRef(int& row, int& column, Way way, bool isInverse) {
 }
 
 
-std::pair<int, int> Snake::step(int row, int column, Way way, bool isInverse) {
+std::pair<int, int>&& Snake::step(int row, int column, Way way, bool isInverse) {
     std::pair<int, int> stepWay = step(way,isInverse);
     return std::move(std::make_pair(row+stepWay.first,column+stepWay.second));
 }
@@ -70,19 +76,21 @@ Way Snake::getNewWay(Way currentWay) {
     return chooseArr[cocos2d::RandomHelper::random_int(0,2)];
 }
 
-float t = 0;
-int flips = 0;
+
+float timerBuffer = 0;
+int flipsBuffer = 0;
 
 void Snake::move(float delta) {
-    if(t<speed){
+    if(timerBuffer<speed){
         for(int i = 0;i<tailParts.size();++i) {
-            auto stepDirect = step(GET_WAY(tailParts[i]));
+            decltype(auto) tailPart = tailParts[i];
+            auto stepDirect = step(GET_WAY(tailPart));
             Vec2 direction = Vec2(stepDirect.first, stepDirect.second);
-            GET_SPRITE(tailParts[i]).setPosition(GET_SPRITE(tailParts[i]).getPosition()
+            GET_SPRITE(tailPart).setPosition(GET_SPRITE(tailPart).getPosition()
                                                   + direction * delta/speed *
                                                     garden->getScene()->getChunkWidth());
         }
-        t+=delta;
+        timerBuffer+=delta;
     }else{
         Way& headWayRef = GET_WAY(tailParts[0]);
         Way buffWay = headWayRef;
@@ -90,6 +98,7 @@ void Snake::move(float delta) {
             decltype(auto) tailPart = tailParts[i];
             garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart)) = DIRT;
             stepByRef(GET_ROW(tailPart),GET_COLUMN(tailPart),GET_WAY(tailPart));
+
             GardenElement newGardenElement;
 
             if(i>0) {
@@ -103,19 +112,20 @@ void Snake::move(float delta) {
             garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart)) = newGardenElement;
         }
         alignSnake();
-        flips++;
-        if(flips>=chunksCountToChangeWay) {
+        flipsBuffer++;
+        if(flipsBuffer>=chunksCountToChangeWay) {
             headWayRef = getNewWay(headWayRef);
-            flips = 0;
+            flipsBuffer = 0;
         }
-        t = 0;
+        timerBuffer = 0;
     }
 
 }
 
 void Snake::alignSnake() {
-    for(int i =0;i<tailParts.size();++i){
-        GET_SPRITE(tailParts[i]).setPosition(garden->getScene()->fromGridToPosition(GET_ROW(tailParts[i]),GET_COLUMN(tailParts[i])));
+    for(int i = 0;i<tailParts.size();++i){
+        decltype(auto) tailPart = tailParts[i];
+        GET_SPRITE(tailPart).setPosition(garden->getScene()->fromGridToPosition(GET_ROW(tailPart),GET_COLUMN(tailPart)));
     }
 }
 
