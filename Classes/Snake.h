@@ -36,7 +36,7 @@ public:
 
     Way getNewWay(Way currentWay);
 
-
+    void alignSnake();
     void move(float delta);
 };
 

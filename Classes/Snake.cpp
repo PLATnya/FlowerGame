@@ -102,7 +102,7 @@ void Snake::move(float delta) {
             }else newGardenElement = SNAKE_HEAD;
             garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart)) = newGardenElement;
         }
-
+        alignSnake();
         flips++;
         if(flips>=chunksCountToChangeWay) {
             headWayRef = getNewWay(headWayRef);
@@ -112,3 +112,10 @@ void Snake::move(float delta) {
     }
 
 }
+
+void Snake::alignSnake() {
+    for(int i =0;i<tailParts.size();++i){
+        GET_SPRITE(tailParts[i]).setPosition(garden->getScene()->fromGridToPosition(GET_ROW(tailParts[i]),GET_COLUMN(tailParts[i])));
+    }
+}
+
