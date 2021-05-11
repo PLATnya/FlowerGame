@@ -11,7 +11,9 @@ void Snake::addTailPart() {
 }
 
 void Snake::removeTailPart() {
+    Node& tailSprite = GET_SPRITE(tailParts[tailParts.size()-1]);
     tailParts.pop_back();
+    tailSprite.removeFromParentAndCleanup(true);
 }
 
 Snake::Snake(int row, int column, Way way, GardenModel* garden) {
@@ -20,7 +22,7 @@ Snake::Snake(int row, int column, Way way, GardenModel* garden) {
     tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column),way));
     garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
-    for(int i = 0;i<5;i++)addTailPart();
+    addTailPart();
 }
 
 std::pair<int, int>&& Snake::step(Way way, bool isInverse) {
@@ -70,8 +72,6 @@ Way Snake::getNewWay(Way currentWay) {
 }
 
 
-float timerBuffer = 0;
-int flipsBuffer = 0;
 
 void Snake::move(float delta) {
     if(timerBuffer<speed){
@@ -103,16 +103,23 @@ void Snake::move(float delta) {
                 if(i==tailParts.size()-1) newGardenElement = SNAKE_TAIL;
             }else {
                 newGardenElement = SNAKE_HEAD;
-                //TODO: check clear way
+                //TODO: check clear way(snake parts and garden bounds)
+
+                if(flipsBuffer>=chunksCountToChangeWay) {
+                    headWayRef = getNewWay(headWayRef);
+                    flipsBuffer = 0;
+                }
+                auto stepGridPosition = step(GET_ROW(tailPart), GET_COLUMN(tailPart), GET_WAY(tailPart));
+                if(garden->getGardenElementRef(stepGridPosition.first,stepGridPosition.second)==FLOWER){
+                    //TODO: eat flower
+                }
+
             }
             garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart)) = newGardenElement;
         }
         alignSnake();
         flipsBuffer++;
-        if(flipsBuffer>=chunksCountToChangeWay) {
-            headWayRef = getNewWay(headWayRef);
-            flipsBuffer = 0;
-        }
+
         timerBuffer = 0;
     }
 

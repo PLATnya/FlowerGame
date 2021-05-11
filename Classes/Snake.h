@@ -20,6 +20,10 @@ enum Way {
     RIGHT
 };
 class Snake {
+    float timerBuffer = 0;
+    int flipsBuffer = 0;
+
+
     std::vector<std::tuple<int, int,cocos2d::Node&,Way>> tailParts;
 
     static std::pair<int,int>&& step(int row, int column, Way way, bool isInverse = false);
