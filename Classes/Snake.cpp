@@ -108,7 +108,10 @@ void Snake::move(float delta) {
                 buffWay = buff;
                 newGardenElement = SNAKE_BODY;
                 if(i==tailParts.size()-1) newGardenElement = SNAKE_TAIL;
-            }else newGardenElement = SNAKE_HEAD;
+            }else {
+                newGardenElement = SNAKE_HEAD;
+                //TODO: check clear way
+            }
             garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart)) = newGardenElement;
         }
         alignSnake();
@@ -127,5 +130,10 @@ void Snake::alignSnake() {
         decltype(auto) tailPart = tailParts[i];
         GET_SPRITE(tailPart).setPosition(garden->getScene()->fromGridToPosition(GET_ROW(tailPart),GET_COLUMN(tailPart)));
     }
+}
+
+bool Snake::isWayClear() {
+
+    return false;
 }
 

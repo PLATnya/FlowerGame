@@ -36,6 +36,8 @@ public:
 
     void alignSnake();
     void move(float delta);
+
+    bool isWayClear();
 };
 
 
