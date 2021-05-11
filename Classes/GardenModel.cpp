@@ -1,5 +1,4 @@
 
-
 #include "GardenModel.h"
 
 GardenModel::GardenModel(GardenScene* scene) {
@@ -11,8 +10,6 @@ GardenModel::GardenModel(GardenScene* scene) {
             gardenMatrix[i][j] = DIRT;
         }
     }
-
-
 
     getScene()->schedule([this](float t){
         addCoins(getFlowersCount() * 5);
@@ -31,7 +28,7 @@ GardenModel::~GardenModel() {
     }
     delete[] gardenMatrix;
 }
-
+#include "Snake.h"
 void GardenModel::addFlowerOnGrid(int row, int column) {
 
     if (getCoins() >= 50 && gardenMatrix[column][row] == GardenElement::DIRT) {
@@ -41,7 +38,5 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
         getScene()->reloadCoins(getCoins());
         gardenMatrix[column][row] = GardenElement::FLOWER;
     }
-
-
 }
 
