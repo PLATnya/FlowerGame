@@ -31,7 +31,7 @@ class Snake {
     static std::pair<int,int>&& step(Way way, bool isInverse = false);
     static Way getNewWay(Way currentWay);
 
-    GardenModel* garden;
+    class GardenModel* garden;
 public:
 
     float speed =1;

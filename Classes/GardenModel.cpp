@@ -37,6 +37,31 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
         addCoins(-50);
         getScene()->reloadCoins(getCoins());
         gardenMatrix[column][row] = GardenElement::FLOWER;
+        startSpawning();
+    }
+}
+
+
+void GardenModel::spawnSnake() {
+    //TODO: check spawning place
+        snakes.emplace_back(new Snake(cocos2d::RandomHelper::random_int(1,kGardenWidth-2),
+                                      cocos2d::RandomHelper::random_int(1,kGardenHeight-2),
+                                      Way(rand()%4),this));
+}
+
+void GardenModel::startSpawning() {
+    if(!isSpawningStarted) {
+        getScene()->schedule([this](float t) {
+            spawnSnake();
+        }, spawnTime, CC_REPEAT_FOREVER, 0, "spawn timer");
+        getScene()->schedule([this](float t) {
+            spawnTime -= spawnTime * 0.05f;
+            getScene()->unschedule("spawn timer");
+            getScene()->schedule([this](float t) { spawnSnake(); }, spawnTime, CC_REPEAT_FOREVER, 0,
+                                 "spawn timer");
+        }, 10, CC_REPEAT_FOREVER, 0, "reduce time");
+        isSpawningStarted = true;
+        spawnSnake();
     }
 }
 

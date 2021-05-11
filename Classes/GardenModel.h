@@ -5,6 +5,8 @@
 #include "cocos2d.h"
 
 #include "GardenScene.h"
+#include "Snake.h"
+
 enum GardenElement{
     DIRT,
     FLOWER,
@@ -14,6 +16,8 @@ enum GardenElement{
 };
 class GardenModel {
 
+    bool isSpawningStarted = false;
+    float spawnTime = 5;
 
     GardenElement** gardenMatrix;
     GardenScene* gardenScene;
@@ -21,13 +25,18 @@ class GardenModel {
     int plantedFlowersCount = 0;
     int coins = 150;
 
-
+    std::vector<class Snake*> snakes;
     std::vector<cocos2d::Node*> flowers;
+
+    void spawnSnake();
 public:
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;
 
     void addFlowerOnGrid(int row, int column);
+
+    void startSpawning();
+
 
     inline GardenScene* getScene(){return gardenScene;}
 
