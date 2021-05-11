@@ -2,58 +2,25 @@
 
 #include "Snake.h"
 
+using namespace cocos2d;
 void Snake::addTailPart() {
     auto last = *(tailParts.end()-1);
-    auto newGridPosition = step(std::get<0>(last),std::get<2>(last), true);
-
-    auto tailPart = std::make_tuple(newGridPosition,garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second),std::get<2>(last));
+    Way& lastTailPartWayRef = GET_WAY(last);
+    auto newGridPosition = step(GET_GRID(last),lastTailPartWayRef, true);
+    auto tailPart = std::make_tuple(newGridPosition,garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second), lastTailPartWayRef);
     tailParts.push_back(tailPart);
-
-
-    auto moveAction = cocos2d::MoveBy::create(1,[&tailPart,this](){
-        auto gridOffset = step(std::get<2>(tailPart));
-        return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->garden->getScene()->getChunkWidth();
-    }());
-
-    auto swapAction = cocos2d::CallFunc::create([&tailPart,&last, this](){
-        std::get<0>(tailPart) = std::get<0>(last);
-        std::get<2>(tailPart) = std::get<2>(last);
-    });
-
-    std::get<1>(tailPart)->runAction( cocos2d::RepeatForever::create(cocos2d::Sequence::create(moveAction, swapAction,
-                                                                                                   nullptr)));
 }
 
 void Snake::removeTailPart() {
 
 }
 
-
-
 Snake::Snake(int row, int column, Way way, GardenModel* garden) {
-
     this->garden = garden;
     auto position = std::make_pair(row,column);
 
     tailParts.push_back(std::make_tuple(position, garden->getScene()->makeSnakeTail(row,column),way));
-
-
-    auto moveAction = cocos2d::MoveBy::create(1,[this](){
-        auto tailPart = tailParts[0];
-        auto gridOffset = step(std::get<2>(tailPart));
-
-       return cocos2d::Vec2(gridOffset.first,gridOffset.second)*this->garden->getScene()->getChunkWidth();
-    }());
-
-    auto swapAction = cocos2d::CallFunc::create([this](){
-        auto tailPart = tailParts[0];
-        std::get<0>(tailPart) = step(std::get<0>(tailPart),std::get<2>(tailPart));
-    });
-
-    std::get<1>(tailParts[0])->runAction( cocos2d::RepeatForever::create(cocos2d::Sequence::create(moveAction, swapAction,
-                                                                                           nullptr)));
-
-    addTailPart();
+    garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);})
 
 }
 
@@ -80,4 +47,50 @@ std::pair<int, int> Snake::step(Way way, bool isInverse) {
     }
     if(isInverse) stepWay = std::make_pair(-stepWay.first, -stepWay.second);
     return stepWay;
+}
+
+Way Snake::getNewWay(Way currentWay) {
+    Way chooseArr[3];
+    if(currentWay == LEFT||currentWay==RIGHT){
+        chooseArr[0] = DOWN;
+        chooseArr[1] = UP;
+    }else{
+        chooseArr[0] = LEFT;
+        chooseArr[1] = RIGHT;
+    }
+    chooseArr[2] = currentWay;
+    return chooseArr[cocos2d::RandomHelper::random_int(0,2)];
+}
+
+float t = 0;
+int flips = 0;
+
+void Snake::move(float delta) {
+    if(t<1){
+        for(int i = 0;i<tailParts.size();++i) {
+            auto stepDirect = step(GET_WAY(tailParts[i]));
+            Vec2 direction = Vec2(stepDirect.first, stepDirect.second);
+            GET_SPRITE(tailParts[i])->setPosition(GET_SPRITE(tailParts[i])->getPosition()
+                                                  + direction * delta *
+                                                    garden->getScene()->getChunkWidth());
+        }
+        t+=delta;
+    }else{
+        Way& headWayRef = GET_WAY(tailParts[0]);
+        Way buffWay = headWayRef;
+        for(int i = 1;i<tailParts.size();++i) {
+            Way& tailWayRef = GET_WAY(tailParts[i]);
+            Way buff = tailWayRef;
+            tailWayRef = buffWay;
+            buffWay = buff;
+        }
+        
+        flips++;
+        if(flips>=3) {
+            headWayRef = getNewWay(headWayRef);
+            flips = 0;
+        }
+        t = 0;
+    }
+
 }

@@ -29,6 +29,9 @@ public:
     void removeTailPart();
 
 
+    Way getNewWay(Way currentWay);
+
+    void move(float delta);
 };
 
 
