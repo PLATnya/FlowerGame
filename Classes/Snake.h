@@ -24,6 +24,8 @@ class Snake {
 
     GardenModel* garden;
 public:
+    int speed =1;
+    int chunksCountToChangeWay = 3;
     Snake(int row, int column, Way way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();
@@ -31,6 +33,8 @@ public:
 
     Way getNewWay(Way currentWay);
 
+   
+    void recalculateMatrix();
     void move(float delta);
 };
 

@@ -20,7 +20,9 @@ Snake::Snake(int row, int column, Way way, GardenModel* garden) {
     auto position = std::make_pair(row,column);
 
     tailParts.push_back(std::make_tuple(position, garden->getScene()->makeSnakeTail(row,column),way));
-    garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);})
+    garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
+
+    for(int i = 0;i<5;i++)addTailPart();
 
 }
 
@@ -66,12 +68,12 @@ float t = 0;
 int flips = 0;
 
 void Snake::move(float delta) {
-    if(t<1){
+    if(t<speed){
         for(int i = 0;i<tailParts.size();++i) {
             auto stepDirect = step(GET_WAY(tailParts[i]));
             Vec2 direction = Vec2(stepDirect.first, stepDirect.second);
             GET_SPRITE(tailParts[i])->setPosition(GET_SPRITE(tailParts[i])->getPosition()
-                                                  + direction * delta *
+                                                  + direction * delta/speed *
                                                     garden->getScene()->getChunkWidth());
         }
         t+=delta;
@@ -84,13 +86,26 @@ void Snake::move(float delta) {
             tailWayRef = buffWay;
             buffWay = buff;
         }
-        
+        recalculateMatrix();
         flips++;
-        if(flips>=3) {
+        if(flips>=chunksCountToChangeWay) {
             headWayRef = getNewWay(headWayRef);
             flips = 0;
         }
         t = 0;
     }
 
+}
+void Snake::recalculateMatrix() {
+    float width = garden->getScene()->getChunkWidth()/2;
+    for(int i = 0;i<tailParts.size();++i){
+        auto gridPosition = GET_GRID(tailParts[i]);
+        GardenElement& gardenElementRef = garden->getGardenElementRef(gridPosition);
+        gardenElementRef = DIRT;
+        gridPosition = garden->getScene()->fromPositionToGrid(GET_SPRITE(tailParts[i])->getPosition()+Vec2(width,width));
+        gardenElementRef = garden->getGardenElementRef(gridPosition);
+        if(i==0) gardenElementRef = SNAKE_HEAD;
+        else if(i==tailParts.size()-1) gardenElementRef = SNAKE_TAIL;
+        else gardenElementRef = SNAKE_BODY;
+    }
 }
