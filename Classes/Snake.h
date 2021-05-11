@@ -7,8 +7,12 @@
 #include <vector>
 #include <cocos2d.h>
 #include "GardenModel.h"
+
+#define GET_GRID(__type__) std::get<0>(__type__)
+#define GET_WAY(__type__) std::get<2>(__type__)
+#define GET_SPRITE(__type__) std::get<1>(__type__)
 enum Way {
-    UP=0,
+    UP,
     DOWN,
     LEFT,
     RIGHT
@@ -23,8 +27,6 @@ public:
     Snake(int row, int column, Way way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();
-
-
 
 
 };
