@@ -7,7 +7,10 @@
 #include "GardenScene.h"
 enum GardenElement{
     DIRT,
-    FLOWER
+    FLOWER,
+    SNAKE_HEAD,
+    SNAKE_BODY,
+    SNAKE_TAIL
 };
 class GardenModel {
 
@@ -28,6 +31,7 @@ public:
 
     inline GardenScene* getScene(){return gardenScene;}
 
+    inline GardenElement& getGardenElementRef(int x, int y){return gardenMatrix[y][x];}
 
     inline int getFlowersCount(){return plantedFlowersCount;}
     inline void addFlower(){plantedFlowersCount++;}
