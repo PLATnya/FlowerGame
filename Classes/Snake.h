@@ -7,10 +7,10 @@
 #include <vector>
 #include <cocos2d.h>
 #include "GardenModel.h"
-
-#define GET_GRID(__type__) std::get<0>(__type__)
-#define GET_WAY(__type__) std::get<2>(__type__)
-#define GET_SPRITE(__type__) std::get<1>(__type__)
+#define GET_COLUMN(__type__) std::get<1>(__type__)
+#define GET_ROW(__type__) std::get<0>(__type__)
+#define GET_WAY(__type__) std::get<3>(__type__)
+#define GET_SPRITE(__type__) std::get<2>(__type__)
 enum Way {
     UP,
     DOWN,
@@ -18,8 +18,11 @@ enum Way {
     RIGHT
 };
 class Snake {
-    std::vector<std::tuple<std::pair<int,int>,cocos2d::Node*,Way>> tailParts;
-    std::pair<int,int> step(std::pair<int,int> start, Way way, bool isInverse = false);
+    std::vector<std::tuple<int, int,cocos2d::Node&,Way>> tailParts;
+
+
+    std::pair<int,int> step(int row, int column, Way way, bool isInverse = false);
+    void stepByRef(int& row, int& column, Way way, bool isInverse = false);
     std::pair<int,int> step(Way way, bool isInverse = false);
 
     GardenModel* garden;
@@ -33,8 +36,7 @@ public:
 
     Way getNewWay(Way currentWay);
 
-   
-    void recalculateMatrix();
+
     void move(float delta);
 };
 
