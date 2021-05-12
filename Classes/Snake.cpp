@@ -2,15 +2,20 @@
 #include "Snake.h"
 
 using namespace cocos2d;
-void Snake::addTailPart() {//TODO: no blinding adding
+void Snake::addTailPart() {
     if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
         Way &lastTailPartWayRef = GET_WAY(last);
         auto newGridPosition = step(GET_ROW(last), GET_COLUMN(last), lastTailPartWayRef, true);
+
+        Node* newSprite = garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second,color,Color4F::WHITE);
+
+        auto forSprite = step(GET_WAY(last),true);
+        Vec2 newSpritePosition = GET_SPRITE(last).getPosition() + Vec2(forSprite.first,forSprite.second)* garden->getScene()->getChunkWidth();
+        newSprite->setPosition(newSpritePosition);
         tailParts.emplace_back(
                 std::tie(newGridPosition.first, newGridPosition.second,
-                         *garden->getScene()->makeSnakeTail(newGridPosition.first,
-                                                            newGridPosition.second,color,Color4F::WHITE),
+                         *newSprite,
                          lastTailPartWayRef));
     }
 }

@@ -100,7 +100,6 @@ void GardenScene::addUpdateMethod(std::function<void(float)> function) {
 
 
 cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor, Color4F borderColor) {
-    //TODO: snake unique border color and different color of snake head
     auto tailNode = DrawNode::create();
     float borderWidth = 0.5f;
     Vec2 startOrigin = Vec2(1,1)*(borderWidth/2);
