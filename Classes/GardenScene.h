@@ -15,6 +15,7 @@ class GardenScene : public cocos2d::Scene
 
 
     cocos2d::Label* coinsLabel;
+    cocos2d::Label* startLabel;
 
     std::vector<std::function<void(float)>> updateMethods;
 
@@ -36,7 +37,8 @@ public:
 
     void drawGarden(int gardenWidth, int gardenHeight);
     void reloadCoins(int coins);
-    void initCoins();
+    void initLabels();
+    void startLabels();
 
     inline void up(float t){}
 

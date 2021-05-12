@@ -17,7 +17,7 @@ GardenModel::GardenModel(GardenScene* scene) {
     },3,kRepeatForever,0,"Coins scheduler");
 
     gardenScene->setChunkWidth(kGardenWidth);
-    gardenScene->initCoins();
+    gardenScene->initLabels();
     gardenScene->reloadCoins(150);
     gardenScene->drawGarden(kGardenWidth,kGardenHeight);
 }
@@ -54,6 +54,7 @@ void GardenModel::spawnSnake() {
 
 void GardenModel::startSpawning() {
     if(!isSpawningStarted) {
+        getScene()->startLabels();
         getScene()->schedule([this](float t) {
             spawnSnake();
         }, spawnTime, CC_REPEAT_FOREVER, 0, "spawn timer");
