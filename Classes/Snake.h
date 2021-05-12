@@ -23,13 +23,14 @@ class Snake {
     float timerBuffer = 0;
     int flipsBuffer = 0;
 
+    bool stay = false;
     cocos2d::Color4F color;
     std::vector<std::tuple<int, int,cocos2d::Node&,Way>> tailParts;
 
 
     static void stepByRef(int& row, int& column, Way way, bool isInverse = false);
     static std::pair<int,int>&& step(Way way, bool isInverse = false);
-    static Way getNewWay(Way currentWay);
+    static Way* getNewWay(Way currentWay);
 
     class GardenModel* garden;
 public:
@@ -44,7 +45,7 @@ public:
     void alignSnake();
     void move(float delta);
 
-    bool isWayClear();
+    void checkWay(Way& way, const int& row, const int& column);
     bool isPartIn(const int& row, const int& column);
 };
 
