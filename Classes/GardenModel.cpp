@@ -17,7 +17,7 @@ GardenModel::GardenModel(GardenScene* scene) {
     },3,kRepeatForever,0,"Coins scheduler");
 
     gardenScene->setChunkWidth(kGardenWidth);
-    gardenScene->initCoins();
+    gardenScene->initLabels();
     gardenScene->reloadCoins(150);
     gardenScene->drawGarden(kGardenWidth,kGardenHeight);
 }
@@ -54,6 +54,7 @@ void GardenModel::spawnSnake() {
 
 void GardenModel::startSpawning() {
     if(!isSpawningStarted) {
+        getScene()->startLabels();
         getScene()->schedule([this](float t) {
             spawnSnake();
         }, spawnTime, CC_REPEAT_FOREVER, 0, "spawn timer");
@@ -78,20 +79,24 @@ void GardenModel::catchSnakeOnGrid(const int& row, const int& column) {
 }
 
 void GardenModel::eatFlowerOnGrid(const int &row, const int &column) {
-    for(int i = 0;i<flowers.size();++i){
-        decltype(auto) flower = flowers[i];
-        if(GET_ROW(flower) == row && GET_COLUMN(flower) == column){
-            addFlowers(-1);
-            cocos2d::Node* sprite = GET_SPRITE(flower);
-            flowers.erase(flowers.begin()+i);
-            sprite->removeFromParentAndCleanup(true);
-            getGardenElementRef(row,column) = DIRT;
+    if(getGardenElementRef(row, column) == FLOWER){
+            for (int i = 0;i<flowers.size();++i){
+                decltype(auto) flower = flowers[i];
+                if (GET_ROW(flower) == row && GET_COLUMN(flower) == column) {
+                    addFlowers(-1);
+                    cocos2d::Node *sprite = GET_SPRITE(flower);
+                    flowers.erase(flowers.begin() + i);
+                    sprite->removeFromParentAndCleanup(true);
+                    getGardenElementRef(row, column) = DIRT;
 
-            auto bustAction = cocos2d::Sequence::create(cocos2d::CallFunc::create([this](){snakesSecondsPerChunk/=2;}),
-                                                         cocos2d::DelayTime::create(5),
-                                                         cocos2d::CallFunc::create([this](){snakesSecondsPerChunk*=2;}),NULL);
-            getScene()->runAction(bustAction);
-        }
+                    auto bustAction = cocos2d::Sequence::create(
+                            cocos2d::CallFunc::create([this]() { snakesSecondsPerChunk /= 2; }),
+                            cocos2d::DelayTime::create(5),
+                            cocos2d::CallFunc::create([this]() { snakesSecondsPerChunk *= 2; }),
+                            NULL);
+                    getScene()->runAction(bustAction);
+                }
+            }
     }
 }
 

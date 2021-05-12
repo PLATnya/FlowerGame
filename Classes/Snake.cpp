@@ -6,17 +6,24 @@ void Snake::addTailPart() {
     if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
         Way &lastTailPartWayRef = GET_WAY(last);
-        auto newGridPosition = step(GET_ROW(last), GET_COLUMN(last), lastTailPartWayRef, true);
+        int& lastTailRowRef = GET_ROW(last);
+        int& lastTailColumnRef = GET_COLUMN(last);
 
-        Node* newSprite = garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second,color,Color4F::WHITE);
+        if(isGoodWay(lastTailRowRef, lastTailColumnRef, lastTailPartWayRef) ){
+            auto newGridPosition = step(lastTailRowRef, lastTailColumnRef, lastTailPartWayRef, true);
+            Node *newSprite = garden->getScene()->makeSnakeTail(newGridPosition.first,
+                                                                newGridPosition.second, color,
+                                                                Color4F::WHITE);
 
-        auto forSprite = step(GET_WAY(last),true);
-        Vec2 newSpritePosition = GET_SPRITE(last).getPosition() + Vec2(forSprite.first,forSprite.second)* garden->getScene()->getChunkWidth();
-        newSprite->setPosition(newSpritePosition);
-        tailParts.emplace_back(
-                std::tie(newGridPosition.first, newGridPosition.second,
-                         *newSprite,
-                         lastTailPartWayRef));
+            auto forSprite = step(GET_WAY(last), true);
+            Vec2 newSpritePosition = GET_SPRITE(last).getPosition() +
+                                     Vec2(forSprite.first, forSprite.second) *
+                                     garden->getScene()->getChunkWidth();
+            newSprite->setPosition(newSpritePosition);
+            tailParts.emplace_back(
+                    std::tie(newGridPosition.first, newGridPosition.second, *newSprite,
+                             lastTailPartWayRef));
+        }
     }
 }
 
@@ -41,6 +48,8 @@ Snake::Snake(int row, int column, Way way, GardenModel* garden) {
 
     auto growingAction = Sequence::createWithTwoActions(DelayTime::create(3),CallFunc::create([this](){addTailPart();}));
     GET_SPRITE(tailParts[0]).runAction(RepeatForever::create(growingAction));
+
+    timerBuffer =garden->snakesSecondsPerChunk;
 }
 
 std::pair<int, int>&& Snake::step(Way way, bool isInverse) {
@@ -91,19 +100,16 @@ Way* Snake::getNewWay(Way currentWay) {
 
 void Snake::checkWay(Way& way, const int& row, const int& column) {
     stay = false;
-    auto goodWay = [this, row, column](Way way){
-        auto newGridPosition = step(row, column,way);
-        if(newGridPosition.first>=0&&newGridPosition.second>=0&&
-        newGridPosition.first<garden->kGardenWidth&&newGridPosition.second<garden->kGardenHeight)
-            if(garden->getGardenElementRef(newGridPosition.first, newGridPosition.second) == DIRT) return true;
-        return false;
-    };
-    if(goodWay(way)) return;
 
+    if(flipsBuffer < chunksCountToChangeWay&&isGoodWay(row, column, way)) {
+        return;
+    }
     Way* newWays = getNewWay(way);
-    for(int i = 0;i<2;++i){
-        if(goodWay(newWays[i])) {
+    std::swap(newWays[RandomHelper::random_int(0,2)],newWays[RandomHelper::random_int(0,2)]);
+    for(int i = 0;i<3;++i){
+        if(isGoodWay(row, column, newWays[i])) {
             way = newWays[i];
+            flipsBuffer = 0;
             delete newWays;
             return;
         }
@@ -112,8 +118,6 @@ void Snake::checkWay(Way& way, const int& row, const int& column) {
     stay = true;
 
 }
-
-
 
 void Snake::move(float delta) {
     if(timerBuffer<garden->snakesSecondsPerChunk){
@@ -130,42 +134,46 @@ void Snake::move(float delta) {
         }
         timerBuffer+=delta;
     }else{
-        Way& headWayRef = GET_WAY(tailParts[0]);
+        decltype(auto) headPart = tailParts[0];
+        Way& headWayRef = GET_WAY(headPart);
+        int& headRowRef = GET_ROW(headPart);
+        int& headColumnRef = GET_COLUMN(headPart);
+
+
+        flipsBuffer++;
         Way buffWay = headWayRef;
+        checkWay(headWayRef, headRowRef, headColumnRef);
+        alignSnake();
         if(!stay) {
-            for (int i = 0; i < tailParts.size(); ++i) {
-                decltype(auto) tailPart = tailParts[i];
-                garden->getGardenElementRef(GET_ROW(tailPart), GET_COLUMN(tailPart)) = DIRT;//
-                stepByRef(GET_ROW(tailPart), GET_COLUMN(tailPart), GET_WAY(tailPart));//
-                GardenElement newGardenElement;
-                if (i > 0) {
-                    Way &tailWayRef = GET_WAY(tailPart);
-                    Way buff = tailWayRef;
-                    tailWayRef = buffWay;
-                    buffWay = buff;
-                    newGardenElement = SNAKE_BODY;
-                    if (i == tailParts.size() - 1) newGardenElement = SNAKE_TAIL;
-                } else {
-                    newGardenElement = SNAKE_HEAD;
-                    if (flipsBuffer >= chunksCountToChangeWay) {
-                        headWayRef = getNewWay(headWayRef)[cocos2d::RandomHelper::random_int(0, 2)];
-                        flipsBuffer = 0;
-                    }
-                    if (garden->getGardenElementRef(GET_ROW(tailPart), GET_COLUMN(tailPart)) ==
-                        FLOWER) {
-                        garden->eatFlowerOnGrid(GET_ROW(tailPart), GET_COLUMN(tailPart));
-                    }
 
-                }
-                garden->getGardenElementRef(GET_ROW(tailPart),
-                                            GET_COLUMN(tailPart)) = newGardenElement;
-            }
-            alignSnake();//
-            flipsBuffer++;
+            garden->getGardenElementRef(headRowRef, headColumnRef) = DIRT;
+            stepByRef(headRowRef, headColumnRef, headWayRef);//
+
+            garden->eatFlowerOnGrid(headRowRef, headColumnRef);
+            garden->getGardenElementRef(headRowRef, headColumnRef) = SNAKE_HEAD;
+
         }
-        //TODO: check clear way(snake parts and garden bounds)
-        checkWay(headWayRef, GET_ROW(tailParts[0]), GET_COLUMN(tailParts[0]));
+        if(!stay) {
+            for (int i = 1; i < tailParts.size(); ++i) {
+                decltype(auto) tailPart = tailParts[i];
 
+                Way &tailWayRef = GET_WAY(tailPart);
+
+                Way buff = tailWayRef;
+                tailWayRef = buffWay;
+                buffWay = buff;
+
+                int &tailRowRef = GET_ROW(tailPart);
+                int &tailColumnRef = GET_COLUMN(tailPart);
+                GardenElement newGardenElement;
+                newGardenElement = SNAKE_BODY;
+                if (i == tailParts.size() - 1) newGardenElement = SNAKE_TAIL;
+
+                garden->getGardenElementRef(tailRowRef, tailColumnRef) = DIRT;
+                stepByRef(tailRowRef, tailColumnRef, tailWayRef);//
+                garden->getGardenElementRef(tailRowRef, tailColumnRef) = newGardenElement;
+            }
+        }
         timerBuffer = 0;
     }
 
@@ -195,4 +203,15 @@ bool Snake::isPartIn(const int& row, const int& column) {
             break;
     }
     return false;
+}
+
+bool Snake::isGoodWay(const int& row, const int& column, const Way& way) {
+        auto newGridPosition = step(row, column,way);
+        if(newGridPosition.first>=0&&newGridPosition.second>=0&&
+           newGridPosition.first<garden->kGardenWidth&&newGridPosition.second<garden->kGardenHeight) {
+            GardenElement& elementRef = garden->getGardenElementRef(newGridPosition.first, newGridPosition.second);
+            if (elementRef ==DIRT||elementRef == FLOWER)
+                return true;
+        }
+        return false;
 }

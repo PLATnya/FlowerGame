@@ -80,18 +80,17 @@ Sprite* GardenScene::makeFlower(int row, int column) {
     return flower;
 }
 
-void GardenScene::initCoins() {
+void GardenScene::initLabels() {
     coinsLabel = Label::createWithTTF("Coins:", "fonts/Marker Felt.ttf", 24);
-    if (coinsLabel == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        coinsLabel->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                     origin.y + visibleSize.height - coinsLabel->getContentSize().height));
-        this->addChild(coinsLabel, 1);
-    }
+
+    coinsLabel->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                 origin.y + visibleSize.height - coinsLabel->getContentSize().height));
+    this->addChild(coinsLabel, 1);
+
+    startLabel = Label::createWithTTF("Plant seed to start:", "fonts/Marker Felt.ttf", 24);
+    startLabel->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                 origin.y + visibleSize.height - startLabel->getContentSize().height*2));
+    this->addChild(startLabel, 1);
 }
 
 void GardenScene::addUpdateMethod(std::function<void(float)> function) {
@@ -125,4 +124,10 @@ std::pair<int, int> GardenScene::fromPositionToGrid(const cocos2d::Vec2& positio
     int row =(int)(newPosition.x/chunkWidth);
     int column =(int)(newPosition.y/chunkWidth);
     return std::make_pair(row,column);
+}
+
+
+
+void GardenScene::startLabels() {
+    startLabel->removeFromParentAndCleanup(true);
 }
