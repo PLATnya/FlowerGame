@@ -44,10 +44,12 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
 
 
 void GardenModel::spawnSnake() {
-    //TODO: check spawning place
-        snakes.emplace_back(new Snake(cocos2d::RandomHelper::random_int(1,kGardenWidth-2),
-                                      cocos2d::RandomHelper::random_int(1,kGardenHeight-2),
-                                      Way(rand()%4),this));
+    Way newWay = Way(rand()%4);
+    int newRow = cocos2d::RandomHelper::random_int(1,kGardenWidth-2);
+    int newColumn = cocos2d::RandomHelper::random_int(1,kGardenHeight-2);
+    auto tailPos = Snake::step(newRow, newColumn, newWay);
+    if(getGardenElementRef(newRow,newColumn) == DIRT &&  getGardenElementRef(tailPos.first,tailPos.second) == DIRT)
+        snakes.push_back(new Snake(newRow,newColumn,newWay,this));
 }
 
 void GardenModel::startSpawning() {

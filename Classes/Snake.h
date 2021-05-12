@@ -26,7 +26,7 @@ class Snake {
     cocos2d::Color4F color;
     std::vector<std::tuple<int, int,cocos2d::Node&,Way>> tailParts;
 
-    static std::pair<int,int>&& step(int row, int column, Way way, bool isInverse = false);
+
     static void stepByRef(int& row, int& column, Way way, bool isInverse = false);
     static std::pair<int,int>&& step(Way way, bool isInverse = false);
     static Way getNewWay(Way currentWay);
@@ -34,7 +34,7 @@ class Snake {
     class GardenModel* garden;
 public:
 
-
+    static std::pair<int,int>&& step(int row, int column, Way way, bool isInverse = false);
 
     int chunksCountToChangeWay = 2;
     Snake(int row, int column, Way way, GardenModel* garden);
