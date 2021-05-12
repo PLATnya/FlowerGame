@@ -38,7 +38,7 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
         getScene()->reloadCoins(getCoins());
         gardenMatrix[column][row] = GardenElement::FLOWER;
         startSpawning();
-        if(flowers.size()>2) maxSnakSize = 10; else maxSnakSize = 5;
+        if(flowers.size()>2) maxSnakeSize = 10; else maxSnakeSize = 5;
     }
 }
 
@@ -84,6 +84,11 @@ void GardenModel::eatFlowerOnGrid(const int &row, const int &column) {
             flowers.erase(flowers.begin()+i);
             sprite->removeFromParentAndCleanup(true);
             getGardenElementRef(row,column) = DIRT;
+
+            auto bustAction = cocos2d::Sequence::create(cocos2d::CallFunc::create([this](){snakesSecondsPerChunk/=2;}),
+                                                         cocos2d::DelayTime::create(5),
+                                                         cocos2d::CallFunc::create([this](){snakesSecondsPerChunk*=2;}),NULL);
+            getScene()->runAction(bustAction);
         }
     }
 }

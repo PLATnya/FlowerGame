@@ -34,7 +34,8 @@ public:
 
     void catchSnakeOnGrid(const int& row, const int& column);
 
-    int maxSnakSize = 5;
+    float snakesSecondsPerChunk = 1;
+    int maxSnakeSize = 5;
 
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;

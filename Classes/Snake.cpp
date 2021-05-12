@@ -3,7 +3,7 @@
 
 using namespace cocos2d;
 void Snake::addTailPart() {//TODO: no blinding adding
-    if(tailParts.size()<garden->maxSnakSize) {
+    if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
         Way &lastTailPartWayRef = GET_WAY(last);
         auto newGridPosition = step(GET_ROW(last), GET_COLUMN(last), lastTailPartWayRef, true);
@@ -87,13 +87,13 @@ Way Snake::getNewWay(Way currentWay) {
 
 
 void Snake::move(float delta) {
-    if(timerBuffer<speed){
+    if(timerBuffer<garden->snakesSecondsPerChunk){
         for(int i = 0;i<tailParts.size();++i) {
             decltype(auto) tailPart = tailParts[i];
             auto stepDirect = step(GET_WAY(tailPart));
             Vec2 direction = Vec2(stepDirect.first, stepDirect.second);
             GET_SPRITE(tailPart).setPosition(GET_SPRITE(tailPart).getPosition()
-                                                  + direction * delta/speed *
+                                                  + direction * delta/garden->snakesSecondsPerChunk *
                                                     garden->getScene()->getChunkWidth());
         }
         timerBuffer+=delta;
@@ -122,10 +122,9 @@ void Snake::move(float delta) {
                     headWayRef = getNewWay(headWayRef);
                     flipsBuffer = 0;
                 }
-                auto stepGridPosition = step(GET_ROW(tailPart), GET_COLUMN(tailPart), GET_WAY(tailPart));
-                if(garden->getGardenElementRef(stepGridPosition.first,stepGridPosition.second)==FLOWER){
+                if(garden->getGardenElementRef(GET_ROW(tailPart),GET_COLUMN(tailPart))==FLOWER){
                     //TODO: eat flower
-                    garden->eatFlowerOnGrid(stepGridPosition.first, stepGridPosition.second);
+                    garden->eatFlowerOnGrid(GET_ROW(tailPart),GET_COLUMN(tailPart));
                 }
 
             }

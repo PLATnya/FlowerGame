@@ -112,6 +112,7 @@ cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor
     Vec2 newPosition = fromGridToPosition(row,column);
 
     tailNode->setPosition(newPosition);
+    tailNode->setLocalZOrder(1);
     addChild(tailNode);
     return tailNode;
 }
