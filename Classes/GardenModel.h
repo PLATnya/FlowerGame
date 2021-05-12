@@ -27,7 +27,7 @@ class GardenModel {
     int coins = 150;
 
     std::vector<class Snake*> snakes;
-    std::vector<cocos2d::Node*> flowers;
+    std::vector<std::tuple<int, int, cocos2d::Node*>> flowers;
 
     void spawnSnake();
 public:
@@ -40,6 +40,7 @@ public:
     const int kGardenHeight = 7 ;
 
     void addFlowerOnGrid(int row, int column);
+    void eatFlowerOnGrid(const int& row, const int& column);
 
     void startSpawning();
 
@@ -49,7 +50,7 @@ public:
     inline GardenElement& getGardenElementRef(int x, int y){return gardenMatrix[y][x];}
 
     inline int getFlowersCount(){return plantedFlowersCount;}
-    inline void addFlower(){plantedFlowersCount++;}
+    inline void addFlowers(int count){plantedFlowersCount+=count;}
 
     inline int getCoins(){return coins;}
     inline void addCoins(int coins){ this->coins+=coins;}

@@ -32,8 +32,8 @@ GardenModel::~GardenModel() {
 void GardenModel::addFlowerOnGrid(int row, int column) {
 
     if (getCoins() >= 50 && gardenMatrix[column][row] == GardenElement::DIRT) {
-        flowers.push_back(gardenScene->makeFlower(row, column));
-        addFlower();
+        flowers.emplace_back(std::make_tuple(row, column, gardenScene->makeFlower(row, column)));
+        addFlowers(1);
         addCoins(-50);
         getScene()->reloadCoins(getCoins());
         gardenMatrix[column][row] = GardenElement::FLOWER;
@@ -71,6 +71,19 @@ void GardenModel::catchSnakeOnGrid(const int& row, const int& column) {
     for(int i = 0;i<snakes.size();++i){
         if(snakes[i]->isPartIn(row, column)){
             snakes[i]->removeTailPart();
+        }
+    }
+}
+
+void GardenModel::eatFlowerOnGrid(const int &row, const int &column) {
+    for(int i = 0;i<flowers.size();++i){
+        decltype(auto) flower = flowers[i];
+        if(GET_ROW(flower) == row && GET_COLUMN(flower) == column){
+            addFlowers(-1);
+            cocos2d::Node* sprite = GET_SPRITE(flower);
+            flowers.erase(flowers.begin()+i);
+            sprite->removeFromParentAndCleanup(true);
+            getGardenElementRef(row,column) = DIRT;
         }
     }
 }

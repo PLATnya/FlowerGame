@@ -125,6 +125,7 @@ void Snake::move(float delta) {
                 auto stepGridPosition = step(GET_ROW(tailPart), GET_COLUMN(tailPart), GET_WAY(tailPart));
                 if(garden->getGardenElementRef(stepGridPosition.first,stepGridPosition.second)==FLOWER){
                     //TODO: eat flower
+                    garden->eatFlowerOnGrid(stepGridPosition.first, stepGridPosition.second);
                 }
 
             }
