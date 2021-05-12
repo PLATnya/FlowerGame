@@ -27,6 +27,7 @@ class Snake {
     cocos2d::Color4F color;
     std::vector<std::tuple<int, int,cocos2d::Node&,Way>> tailParts;
 
+    bool isGoodWay(const int& row, const int& column, const Way& way);
 
     static void stepByRef(int& row, int& column, Way way, bool isInverse = false);
     static std::pair<int,int>&& step(Way way, bool isInverse = false);

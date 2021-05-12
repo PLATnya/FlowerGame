@@ -6,17 +6,24 @@ void Snake::addTailPart() {//TODO: tail on matrix
     if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
         Way &lastTailPartWayRef = GET_WAY(last);
-        auto newGridPosition = step(GET_ROW(last), GET_COLUMN(last), lastTailPartWayRef, true);
+        int& lastTailRowRef = GET_ROW(last);
+        int& lastTailColumnRef = GET_COLUMN(last);
 
-        Node* newSprite = garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second,color,Color4F::WHITE);
+        if(isGoodWay(lastTailRowRef, lastTailColumnRef, lastTailPartWayRef) ){
+            auto newGridPosition = step(lastTailRowRef, lastTailColumnRef, lastTailPartWayRef, true);
+            Node *newSprite = garden->getScene()->makeSnakeTail(newGridPosition.first,
+                                                                newGridPosition.second, color,
+                                                                Color4F::WHITE);
 
-        auto forSprite = step(GET_WAY(last),true);
-        Vec2 newSpritePosition = GET_SPRITE(last).getPosition() + Vec2(forSprite.first,forSprite.second)* garden->getScene()->getChunkWidth();
-        newSprite->setPosition(newSpritePosition);
-        tailParts.emplace_back(
-                std::tie(newGridPosition.first, newGridPosition.second,
-                         *newSprite,
-                         lastTailPartWayRef));
+            auto forSprite = step(GET_WAY(last), true);
+            Vec2 newSpritePosition = GET_SPRITE(last).getPosition() +
+                                     Vec2(forSprite.first, forSprite.second) *
+                                     garden->getScene()->getChunkWidth();
+            newSprite->setPosition(newSpritePosition);
+            tailParts.emplace_back(
+                    std::tie(newGridPosition.first, newGridPosition.second, *newSprite,
+                             lastTailPartWayRef));
+        }
     }
 }
 
@@ -93,24 +100,14 @@ Way* Snake::getNewWay(Way currentWay) {
 
 void Snake::checkWay(Way& way, const int& row, const int& column) {
     stay = false;
-    auto goodWay = [this, row, column](Way way){
-        auto newGridPosition = step(row, column,way);
-        if(newGridPosition.first>=0&&newGridPosition.second>=0&&
-        newGridPosition.first<garden->kGardenWidth&&newGridPosition.second<garden->kGardenHeight) {
-            GardenElement& elementRef = garden->getGardenElementRef(newGridPosition.first, newGridPosition.second);
-            if (elementRef ==DIRT||elementRef == FLOWER)
-                return true;
-        }
-        return false;
-    };
 
-    if(flipsBuffer < chunksCountToChangeWay&&goodWay(way)) {
+    if(flipsBuffer < chunksCountToChangeWay&&isGoodWay(row, column, way)) {
         return;
     }
     Way* newWays = getNewWay(way);
     std::swap(newWays[RandomHelper::random_int(0,2)],newWays[RandomHelper::random_int(0,2)]);
     for(int i = 0;i<3;++i){
-        if(goodWay(newWays[i])) {
+        if(isGoodWay(row, column, newWays[i])) {
             way = newWays[i];
             flipsBuffer = 0;
             delete newWays;
@@ -204,4 +201,15 @@ bool Snake::isPartIn(const int& row, const int& column) {
             break;
     }
     return false;
+}
+
+bool Snake::isGoodWay(const int& row, const int& column, const Way& way) {
+        auto newGridPosition = step(row, column,way);
+        if(newGridPosition.first>=0&&newGridPosition.second>=0&&
+           newGridPosition.first<garden->kGardenWidth&&newGridPosition.second<garden->kGardenHeight) {
+            GardenElement& elementRef = garden->getGardenElementRef(newGridPosition.first, newGridPosition.second);
+            if (elementRef ==DIRT||elementRef == FLOWER)
+                return true;
+        }
+        return false;
 }
