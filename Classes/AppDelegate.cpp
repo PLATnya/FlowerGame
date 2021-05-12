@@ -111,7 +111,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = GardenScene::createScene();
+    GardenScene* scene = GardenScene::createScene();
     player = new Player(scene);
     // run
     director->runWithScene(scene);

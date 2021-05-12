@@ -15,6 +15,7 @@ class GardenScene : public cocos2d::Scene
 
 
     cocos2d::Label* coinsLabel;
+    cocos2d::Label* startLabel;
 
     std::vector<std::function<void(float)>> updateMethods;
 
@@ -22,15 +23,22 @@ public:
 
     void addUpdateMethod(std::function<void(float)> function);
 
-    void makeFlower(int row, int column);
-    static cocos2d::Scene* createScene();
+    cocos2d::Sprite* makeFlower(int row, int column);
+
+    cocos2d::Node* makeSnakeTail(int row, int column, cocos2d::Color4F tailColor, cocos2d::Color4F borderColor);
+
+    cocos2d::Vec2 fromGridToPosition(int row, int column);
+    std::pair<int,int> fromPositionToGrid(const cocos2d::Vec2& position);
+
+    static GardenScene* createScene();
     virtual bool init();
     virtual void update(float delta);
     virtual void onExit();
 
     void drawGarden(int gardenWidth, int gardenHeight);
     void reloadCoins(int coins);
-    void initCoins();
+    void initLabels();
+    void startLabels();
 
     inline void up(float t){}
 

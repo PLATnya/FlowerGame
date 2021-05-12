@@ -12,7 +12,7 @@ class Player {
     GardenModel* gardenGrid;
 public:
 
-    Player(cocos2d::Scene* scene);
+    Player(GardenScene* scene);
 
     inline cocos2d::EventListenerTouchOneByOne* getTouchListener(){return touchListener;};
     void checkListeners(cocos2d::Node *listenerNode);

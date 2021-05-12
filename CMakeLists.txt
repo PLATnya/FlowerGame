@@ -60,12 +60,14 @@ list(APPEND GAME_SOURCE
      Classes/GardenScene.cpp
      Classes/Player.cpp
      Classes/GardenModel.cpp
+     Classes/Snake.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/GardenScene.h
      Classes/Player.h
      Classes/GardenModel.h
+     Classes/Snake.h
      )
 
 if(ANDROID)

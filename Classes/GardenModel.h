@@ -5,11 +5,19 @@
 #include "cocos2d.h"
 
 #include "GardenScene.h"
+#include "Snake.h"
+
 enum GardenElement{
     DIRT,
-    FLOWER
+    FLOWER,
+    SNAKE_HEAD,
+    SNAKE_BODY,
+    SNAKE_TAIL
 };
 class GardenModel {
+
+    bool isSpawningStarted = false;
+    float spawnTime = 5;
 
 
     GardenElement** gardenMatrix;
@@ -17,17 +25,33 @@ class GardenModel {
 
     int plantedFlowersCount = 0;
     int coins = 150;
+
+    std::vector<class Snake*> snakes;
+    std::vector<std::tuple<int, int, cocos2d::Node*>> flowers;
+
+    void spawnSnake();
 public:
+
+    void catchSnakeOnGrid(const int& row, const int& column);
+
+    float snakesSecondsPerChunk = 1;
+    int maxSnakeSize = 5;
+
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;
 
-    void addFlowerOnGrid(const cocos2d::Vec2 position);
+    void addFlowerOnGrid(int row, int column);
+    void eatFlowerOnGrid(const int& row, const int& column);
+
+    void startSpawning();
+
 
     inline GardenScene* getScene(){return gardenScene;}
 
+    inline GardenElement& getGardenElementRef(int x, int y){return gardenMatrix[y][x];}
 
     inline int getFlowersCount(){return plantedFlowersCount;}
-    inline void addFlower(){plantedFlowersCount++;}
+    inline void addFlowers(int count){plantedFlowersCount+=count;}
 
     inline int getCoins(){return coins;}
     inline void addCoins(int coins){ this->coins+=coins;}
