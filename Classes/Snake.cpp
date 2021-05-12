@@ -1,7 +1,7 @@
 
 #include "Snake.h"
 
-using namespace cocos2d;
+USING_NS_CC;
 void Snake::addTailPart() {
     if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
@@ -35,7 +35,7 @@ void Snake::removeTailPart() {
     tailSprite.removeFromParentAndCleanup(true);
 }
 
-Snake::Snake(int row, int column, Way way, GardenModel* garden) {
+Snake::Snake(const int& row, const int& column, const Way& way, GardenModel* garden) {
     this->garden = garden;
     color = Color4F(RandomHelper::random_int(0,255)/255.0f,
                     RandomHelper::random_int(0,255)/255.0f,
@@ -80,7 +80,7 @@ void Snake::stepByRef(int& row, int& column, Way way, bool isInverse) {
    column+=stepWay.second;
 }
 
-std::pair<int, int>&& Snake::step(int row, int column, Way way, bool isInverse) {
+std::pair<int, int>&& Snake::step(const int& row, const int& column, const Way& way, bool isInverse) {
     std::pair<int, int> stepWay = step(way,isInverse);
     return std::move(std::make_pair(row+stepWay.first,column+stepWay.second));
 }
@@ -194,7 +194,7 @@ bool Snake::isPartIn(const int& row, const int& column) {
             if(GET_ROW(tailParts[0]) == row && GET_COLUMN(tailParts[0]) == column) return true;
             break;
         case SNAKE_TAIL:
-            int tailIndex;
+            unsigned int tailIndex;
             tailIndex = tailParts.size()-1;
             if(GET_ROW(tailParts[tailIndex]) == row && GET_COLUMN(tailParts[tailIndex]) == column) return true;
             break;

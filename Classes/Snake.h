@@ -36,10 +36,10 @@ class Snake {
     class GardenModel* garden;
 public:
 
-    static std::pair<int,int>&& step(int row, int column, Way way, bool isInverse = false);
+    static std::pair<int,int>&& step(const int& row, const int& column, const Way& way, bool isInverse = false);
 
     int chunksCountToChangeWay = 4;
-    Snake(int row, int column, Way way, GardenModel* garden);
+    Snake(const int& row, const int& column, const Way& way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();
 

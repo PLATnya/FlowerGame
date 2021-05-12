@@ -29,7 +29,7 @@ GardenModel::~GardenModel() {
     delete[] gardenMatrix;
 }
 #include "Snake.h"
-void GardenModel::addFlowerOnGrid(int row, int column) {
+void GardenModel::addFlowerOnGrid(const int& row, const int& column) {
 
     if (getCoins() >= 50 && gardenMatrix[column][row] == GardenElement::DIRT) {
         flowers.emplace_back(std::make_tuple(row, column, gardenScene->makeFlower(row, column)));
@@ -44,7 +44,8 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
 
 
 void GardenModel::spawnSnake() {
-    Way newWay = Way(rand()%4);
+
+    Way newWay = Way(random()%4);
     int newRow = cocos2d::RandomHelper::random_int(1,kGardenWidth-2);
     int newColumn = cocos2d::RandomHelper::random_int(1,kGardenHeight-2);
     auto tailPos = Snake::step(newRow, newColumn, newWay);
@@ -98,5 +99,10 @@ void GardenModel::eatFlowerOnGrid(const int &row, const int &column) {
                 }
             }
     }
+}
+
+GardenElement &GardenModel::getGardenElementRef(int x, int y) const {
+    if(x<kGardenWidth && y<kGardenHeight) return gardenMatrix[y][x];
+    return gardenMatrix[0][0];
 }
 

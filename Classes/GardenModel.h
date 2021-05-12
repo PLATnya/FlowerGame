@@ -40,21 +40,20 @@ public:
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;
 
-    void addFlowerOnGrid(int row, int column);
+    void addFlowerOnGrid(const int& row, const int& column);
     void eatFlowerOnGrid(const int& row, const int& column);
 
     void startSpawning();
 
 
-    inline GardenScene* getScene(){return gardenScene;}
+    inline GardenScene* getScene() const{return gardenScene;}
+    GardenElement& getGardenElementRef(int x, int y) const;
 
-    inline GardenElement& getGardenElementRef(int x, int y){return gardenMatrix[y][x];}
+    inline const int& getFlowersCount() const{return plantedFlowersCount;}
+    inline void addFlowers(const int& count){plantedFlowersCount+=count;}
 
-    inline int getFlowersCount(){return plantedFlowersCount;}
-    inline void addFlowers(int count){plantedFlowersCount+=count;}
-
-    inline int getCoins(){return coins;}
-    inline void addCoins(int coins){ this->coins+=coins;}
+    inline const int& getCoins() const {return coins;}
+    inline void addCoins(const int& coins){ this->coins+=coins;}
 
     GardenModel(GardenScene* scene);
     ~GardenModel();

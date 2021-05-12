@@ -14,7 +14,7 @@ public:
 
     Player(GardenScene* scene);
 
-    inline cocos2d::EventListenerTouchOneByOne* getTouchListener(){return touchListener;};
+    inline const cocos2d::EventListenerTouchOneByOne* getTouchListener() const{return touchListener;}
     void checkListeners(cocos2d::Node *listenerNode);
 
 };

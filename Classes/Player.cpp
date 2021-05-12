@@ -11,7 +11,7 @@ Player::Player(GardenScene* scene) {
     cocos2d::Vec2 bound(origin.x + chunkWidth * gardenGrid->kGardenWidth, origin.y + chunkWidth * gardenGrid->kGardenHeight);
 
 
-    touchListener->onTouchBegan = [this,scene,chunkWidth,origin,bound](cocos2d::Touch* touch, cocos2d::Event* event) {
+    touchListener->onTouchBegan = [this,scene,bound](cocos2d::Touch* touch, cocos2d::Event* event) {
         cocos2d::Vec2 position = scene->convertTouchToNodeSpace(touch);
         auto gridPos = scene->fromPositionToGrid(position);
 

@@ -3,22 +3,20 @@
 #include <algorithm>
 USING_NS_CC;
 
-
-void GardenScene::drawGarden(int gardenWidth, int gardenHeight){
+void GardenScene::drawGarden(const int& gardenWidth, const int& gardenHeight){
 
     auto gardenGridNode = DrawNode::create();
     float borderWidth = 0.5f;
     float width = chunkWidth - borderWidth*2;
     for(int i = 0;i<gardenHeight;++i) {
         for (int j = 0; j < gardenWidth; ++j) {
-            Vec2 origin = Vec2(j*chunkWidth +borderWidth, i*chunkWidth+borderWidth);
-            Vec2 vertices[4] = { origin, origin + Vec2(width, 0), origin + Vec2(width, width), origin + Vec2(0, width) };
+            Vec2 chunkOrigin = Vec2(j * chunkWidth + borderWidth, i * chunkWidth + borderWidth);
+            Vec2 vertices[4] = {chunkOrigin, chunkOrigin + Vec2(width, 0), chunkOrigin + Vec2(width, width), chunkOrigin + Vec2(0, width) };
             gardenGridNode->drawPolygon(vertices, 4, Color4F::GREEN,borderWidth,Color4F(101.0f/255.0f,167.0f/255.0f,33.0f/255.0f,1));
         }
     }
     addChild(gardenGridNode);
     gardenGridNode->setPosition(origin.x,origin.y);
-
 }
 
 GardenScene* GardenScene::createScene()
@@ -50,7 +48,7 @@ bool GardenScene::init()
 }
 
 void GardenScene::update(float delta) {
-    for(auto i: updateMethods){
+    for(const auto& i: updateMethods){
         i(delta);
     }
 }
@@ -62,13 +60,13 @@ void GardenScene::onExit() {
 }
 
 
-void GardenScene::reloadCoins(int coins) {
+void GardenScene::reloadCoins(const int& coins) {
     std::stringstream ss;
     ss << "Coins: "<<std::to_string(coins);
     coinsLabel->setString(ss.str());
 }
 
-Sprite* GardenScene::makeFlower(int row, int column) {
+Sprite* GardenScene::makeFlower(const int& row, const int& column) {
     Sprite *flower = Sprite::create("flower.png");
 
 
@@ -93,12 +91,12 @@ void GardenScene::initLabels() {
     this->addChild(startLabel, 1);
 }
 
-void GardenScene::addUpdateMethod(std::function<void(float)> function) {
+void GardenScene::addUpdateMethod(const std::function<void(float)>& function) {
     updateMethods.push_back(function);
 }
 
 
-cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor, Color4F borderColor) {
+cocos2d::Node *GardenScene::makeSnakeTail(const int& row, const int& column, const cocos2d::Color4F& tailColor, const cocos2d::Color4F& borderColor) {
     auto tailNode = DrawNode::create();
     float borderWidth = 0.5f;
     Vec2 startOrigin = Vec2(1,1)*(borderWidth/2);
@@ -115,7 +113,7 @@ cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor
     return tailNode;
 }
 
-cocos2d::Vec2 GardenScene::fromGridToPosition(int row, int column) {
+cocos2d::Vec2 GardenScene::fromGridToPosition(const int& row, const int& column) {
     return cocos2d::Vec2(row*chunkWidth,column*chunkWidth) + origin;
 }
 
