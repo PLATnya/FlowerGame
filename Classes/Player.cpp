@@ -16,7 +16,13 @@ Player::Player(GardenScene* scene) {
         auto gridPos = scene->fromPositionToGrid(position);
 
         if (position.x < bound.x && position.y < bound.y) {
-            gardenGrid->addFlowerOnGrid(gridPos.first, gridPos.second);
+            GardenElement touchedElement = gardenGrid->getGardenElementRef(gridPos.first,gridPos.second);
+            if(touchedElement == DIRT){
+                gardenGrid->addFlowerOnGrid(gridPos.first, gridPos.second);
+            }else if(touchedElement == SNAKE_BODY || touchedElement == SNAKE_HEAD|| touchedElement == SNAKE_TAIL){
+                gardenGrid->catchSnakeOnGrid(gridPos.first,gridPos.second);
+            }
+
         }
 
         return true;

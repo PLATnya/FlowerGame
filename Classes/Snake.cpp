@@ -16,7 +16,9 @@ void Snake::addTailPart() {//TODO: no blinding adding
 }
 
 void Snake::removeTailPart() {
-    Node& tailSprite = GET_SPRITE(tailParts[tailParts.size()-1]);
+    decltype(auto) tail = tailParts[tailParts.size()-1];
+    Node& tailSprite = GET_SPRITE(tail);
+    garden->getGardenElementRef(GET_ROW(tail), GET_COLUMN(tail)) = DIRT;
     tailParts.pop_back();
     tailSprite.removeFromParentAndCleanup(true);
 }
@@ -145,5 +147,23 @@ void Snake::alignSnake() {
 
 bool Snake::isWayClear() {
 
+    return false;
+}
+
+bool Snake::isPartIn(const int& row, const int& column) {
+    const GardenElement& element = garden->getGardenElementRef(row, column);
+    switch (element) {
+        case SNAKE_HEAD:
+            if(GET_ROW(tailParts[0]) == row && GET_COLUMN(tailParts[0]) == column) return true;
+            break;
+        case SNAKE_TAIL:
+            int tailIndex;
+            tailIndex = tailParts.size()-1;
+            if(GET_ROW(tailParts[tailIndex]) == row && GET_COLUMN(tailParts[tailIndex]) == column) return true;
+            break;
+        case SNAKE_BODY:
+            for(int i = 1;i<tailParts.size()-1;++i)if(GET_ROW(tailParts[i]) == row && GET_COLUMN(tailParts[i]) == column) return true;
+            break;
+    }
     return false;
 }

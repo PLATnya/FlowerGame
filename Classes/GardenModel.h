@@ -32,6 +32,8 @@ class GardenModel {
     void spawnSnake();
 public:
 
+    void catchSnakeOnGrid(const int& row, const int& column);
+
     int maxSnakSize = 5;
 
     const int kGardenWidth = 25;

@@ -34,6 +34,7 @@ class Snake {
     class GardenModel* garden;
 public:
 
+
     float speed =1;
 
     int chunksCountToChangeWay = 2;
@@ -45,7 +46,7 @@ public:
     void move(float delta);
 
     bool isWayClear();
-
+    bool isPartIn(const int& row, const int& column);
 };
 
 

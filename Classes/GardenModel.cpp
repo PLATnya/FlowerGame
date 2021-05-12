@@ -66,3 +66,12 @@ void GardenModel::startSpawning() {
     }
 }
 
+void GardenModel::catchSnakeOnGrid(const int& row, const int& column) {
+
+    for(int i = 0;i<snakes.size();++i){
+        if(snakes[i]->isPartIn(row, column)){
+            snakes[i]->removeTailPart();
+        }
+    }
+}
+
