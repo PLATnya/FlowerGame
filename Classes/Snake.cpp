@@ -27,12 +27,14 @@ void Snake::addTailPart() {
     }
 }
 
-void Snake::removeTailPart() {
+void Snake::removeTailPart(bool& isLast) {
     decltype(auto) tail = tailParts[tailParts.size()-1];
     Node& tailSprite = GET_SPRITE(tail);
     garden->getGardenElementRef(GET_ROW(tail), GET_COLUMN(tail)) = DIRT;
     tailParts.pop_back();
     tailSprite.removeFromParentAndCleanup(true);
+
+    isLast = tailParts.empty();
 }
 
 Snake::Snake(const int& row, const int& column, const Way& way, GardenModel* garden) {
@@ -42,7 +44,6 @@ Snake::Snake(const int& row, const int& column, const Way& way, GardenModel* gar
                     RandomHelper::random_int(0,255)/255.0f,1);
 
     tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column,color, Color4F::BLACK/2),way));
-    garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
     addTailPart();
 

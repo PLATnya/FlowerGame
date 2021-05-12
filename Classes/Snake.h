@@ -41,7 +41,7 @@ public:
     int chunksCountToChangeWay = 4;
     Snake(const int& row, const int& column, const Way& way, GardenModel* garden);
     void addTailPart();
-    void removeTailPart();
+    void removeTailPart(bool& isLast);
 
     void alignSnake();
     void move(float delta);

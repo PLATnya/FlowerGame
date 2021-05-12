@@ -30,6 +30,7 @@ class GardenModel {
     std::vector<std::tuple<int, int, cocos2d::Node*>> flowers;
 
     void spawnSnake();
+    void updateSnakes(float delta);
 public:
 
     void catchSnakeOnGrid(const int& row, const int& column);

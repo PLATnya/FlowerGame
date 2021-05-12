@@ -3,6 +3,7 @@
 
 GardenModel::GardenModel(GardenScene* scene) {
     this->gardenScene = scene;
+    scene->addUpdateMethod(std::bind(&GardenModel::updateSnakes,this,std::placeholders::_1));
     gardenMatrix = new GardenElement*[kGardenHeight];
     for (int i = 0; i < kGardenHeight; ++i) {
         gardenMatrix[i] = new GardenElement[kGardenWidth];
@@ -74,7 +75,14 @@ void GardenModel::catchSnakeOnGrid(const int& row, const int& column) {
 
     for(int i = 0;i<snakes.size();++i){
         if(snakes[i]->isPartIn(row, column)){
-            snakes[i]->removeTailPart();
+            Snake* snake = snakes[i];
+            bool isLast = false;
+            snake->removeTailPart(isLast);
+            if(isLast){
+                snakes.erase(snakes.begin()+i);
+                delete snake;
+            }
+            break;
         }
     }
 }
@@ -104,5 +112,9 @@ void GardenModel::eatFlowerOnGrid(const int &row, const int &column) {
 GardenElement &GardenModel::getGardenElementRef(int x, int y) const {
     if(x<kGardenWidth && y<kGardenHeight) return gardenMatrix[y][x];
     return gardenMatrix[0][0];
+}
+
+void GardenModel::updateSnakes(float delta) {
+    for(int i = 0;i<snakes.size();++i) snakes[i]->move(delta);
 }
 
