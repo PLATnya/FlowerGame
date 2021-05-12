@@ -99,7 +99,7 @@ void GardenScene::addUpdateMethod(std::function<void(float)> function) {
 }
 
 
-cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor) {
+cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor, Color4F borderColor) {
     //TODO: snake unique border color and different color of snake head
     auto tailNode = DrawNode::create();
     float borderWidth = 0.5f;
@@ -107,7 +107,7 @@ cocos2d::Node *GardenScene::makeSnakeTail(int row, int column, Color4F tailColor
     float width = chunkWidth - borderWidth/2;
 
     Vec2 vertices[4] = { startOrigin, startOrigin + Vec2(width, 0), startOrigin + Vec2(width, width), startOrigin + Vec2(0, width) };
-    tailNode->drawPolygon(vertices, 4, tailColor,borderWidth,Color4F::WHITE);
+    tailNode->drawPolygon(vertices, 4, tailColor,borderWidth,borderColor);
 
     Vec2 newPosition = fromGridToPosition(row,column);
 

@@ -10,7 +10,7 @@ void Snake::addTailPart() {//TODO: no blinding adding
         tailParts.emplace_back(
                 std::tie(newGridPosition.first, newGridPosition.second,
                          *garden->getScene()->makeSnakeTail(newGridPosition.first,
-                                                            newGridPosition.second,color),
+                                                            newGridPosition.second,color,Color4F::WHITE),
                          lastTailPartWayRef));
     }
 }
@@ -29,7 +29,7 @@ Snake::Snake(int row, int column, Way way, GardenModel* garden) {
                     RandomHelper::random_int(0,255)/255.0f,
                     RandomHelper::random_int(0,255)/255.0f,1);
 
-    tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column,color),way));
+    tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column,color, Color4F::BLACK/2),way));
     garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
     addTailPart();
