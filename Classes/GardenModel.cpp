@@ -38,6 +38,7 @@ void GardenModel::addFlowerOnGrid(int row, int column) {
         getScene()->reloadCoins(getCoins());
         gardenMatrix[column][row] = GardenElement::FLOWER;
         startSpawning();
+        if(flowers.size()>2) maxSnakSize = 10; else maxSnakSize = 5;
     }
 }
 

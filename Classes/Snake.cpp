@@ -3,11 +3,16 @@
 
 using namespace cocos2d;
 void Snake::addTailPart() {//TODO: no blinding adding
-    decltype(auto) last = *(tailParts.end()-1);
-    Way& lastTailPartWayRef = GET_WAY(last);
-    auto newGridPosition = step(GET_ROW(last),GET_COLUMN(last),lastTailPartWayRef, true);
-    tailParts.emplace_back(
-            std::tie(newGridPosition.first,newGridPosition.second,*garden->getScene()->makeSnakeTail(newGridPosition.first,newGridPosition.second), lastTailPartWayRef));
+    if(tailParts.size()<garden->maxSnakSize) {
+        decltype(auto) last = *(tailParts.end() - 1);
+        Way &lastTailPartWayRef = GET_WAY(last);
+        auto newGridPosition = step(GET_ROW(last), GET_COLUMN(last), lastTailPartWayRef, true);
+        tailParts.emplace_back(
+                std::tie(newGridPosition.first, newGridPosition.second,
+                         *garden->getScene()->makeSnakeTail(newGridPosition.first,
+                                                            newGridPosition.second,color),
+                         lastTailPartWayRef));
+    }
 }
 
 void Snake::removeTailPart() {
@@ -18,8 +23,11 @@ void Snake::removeTailPart() {
 
 Snake::Snake(int row, int column, Way way, GardenModel* garden) {
     this->garden = garden;
+    color = Color4F(RandomHelper::random_int(0,255)/255.0f,
+                    RandomHelper::random_int(0,255)/255.0f,
+                    RandomHelper::random_int(0,255)/255.0f,1);
 
-    tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column),way));
+    tailParts.emplace_back(std::tie(row,column, *garden->getScene()->makeSnakeTail(row,column,color),way));
     garden->getScene()->addUpdateMethod([this](float delta){this->move(delta);});
 
     addTailPart();

@@ -24,7 +24,7 @@ public:
 
     cocos2d::Sprite* makeFlower(int row, int column);
 
-    cocos2d::Node* makeSnakeTail(int row, int column);
+    cocos2d::Node* makeSnakeTail(int row, int column, cocos2d::Color4F tailColor);
 
     cocos2d::Vec2 fromGridToPosition(int row, int column);
     std::pair<int,int> fromPositionToGrid(const cocos2d::Vec2& position);

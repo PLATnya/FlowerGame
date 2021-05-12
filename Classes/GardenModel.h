@@ -19,6 +19,7 @@ class GardenModel {
     bool isSpawningStarted = false;
     float spawnTime = 5;
 
+
     GardenElement** gardenMatrix;
     GardenScene* gardenScene;
 
@@ -30,6 +31,9 @@ class GardenModel {
 
     void spawnSnake();
 public:
+
+    int maxSnakSize = 5;
+
     const int kGardenWidth = 25;
     const int kGardenHeight = 7 ;
 
