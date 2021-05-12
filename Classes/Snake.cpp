@@ -2,7 +2,7 @@
 #include "Snake.h"
 
 using namespace cocos2d;
-void Snake::addTailPart() {//TODO: tail on matrix
+void Snake::addTailPart() {
     if(tailParts.size()<garden->maxSnakeSize) {
         decltype(auto) last = *(tailParts.end() - 1);
         Way &lastTailPartWayRef = GET_WAY(last);
@@ -138,8 +138,7 @@ void Snake::move(float delta) {
         Way& headWayRef = GET_WAY(headPart);
         int& headRowRef = GET_ROW(headPart);
         int& headColumnRef = GET_COLUMN(headPart);
-        //TODO: fix eating
-        garden->eatFlowerOnGrid(headRowRef, headColumnRef);
+
 
         flipsBuffer++;
         Way buffWay = headWayRef;
@@ -149,7 +148,10 @@ void Snake::move(float delta) {
 
             garden->getGardenElementRef(headRowRef, headColumnRef) = DIRT;
             stepByRef(headRowRef, headColumnRef, headWayRef);//
+
+            garden->eatFlowerOnGrid(headRowRef, headColumnRef);
             garden->getGardenElementRef(headRowRef, headColumnRef) = SNAKE_HEAD;
+
         }
         if(!stay) {
             for (int i = 1; i < tailParts.size(); ++i) {

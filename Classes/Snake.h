@@ -38,7 +38,7 @@ public:
 
     static std::pair<int,int>&& step(int row, int column, Way way, bool isInverse = false);
 
-    int chunksCountToChangeWay = 2;
+    int chunksCountToChangeWay = 4;
     Snake(int row, int column, Way way, GardenModel* garden);
     void addTailPart();
     void removeTailPart();
